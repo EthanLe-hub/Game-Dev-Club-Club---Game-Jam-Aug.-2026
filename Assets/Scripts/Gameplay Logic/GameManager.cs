@@ -13,14 +13,12 @@ public class GameManager : MonoBehaviour
 
     // SerializedFields of the 6 different characters (excluding captain) who can potentially be imposters: 
     // We retrieve their bool isImposter flags and set the according one to true. 
-    /*
     [SerializeField] NavigationOfficer navOfficer; 
     [SerializeField] Cook cook;
     [SerializeField] Engineer engineer;
     [SerializeField] Doctor doctor;
     [SerializeField] RichGuy guy;
     [SerializeField] RichGirl girl; 
-    */ 
 
     void Awake() 
     {
@@ -49,7 +47,7 @@ public class GameManager : MonoBehaviour
 
     // Helper function to set the imposter's flag to true: 
     void SetImposter(int imposter)
-    {/*
+    {
         switch (imposter)
         {
             case 0: 
@@ -73,6 +71,13 @@ public class GameManager : MonoBehaviour
             default:
                 navOfficer.isImposter = true;
                 break; 
-        }*/
+        }
+
+        Debug.Log("Navigation Officer imposter? " + navOfficer.isImposter);
+        Debug.Log("Cook imposter? " + cook.isImposter);
+        Debug.Log("Engineer imposter? " + engineer.isImposter);
+        Debug.Log("Doctor imposter? " + doctor.isImposter);
+        Debug.Log("Rich Guy imposter? " + guy.isImposter);
+        Debug.Log("Rich Girl imposter? " + girl.isImposter);
     }
 }
