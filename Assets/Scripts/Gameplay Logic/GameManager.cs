@@ -1,5 +1,5 @@
 // Ethan Le (8/6/2026):
-using UnityEngine; 
+using UnityEngine;
 
 /** 
  * Global static script for managing game logic:
