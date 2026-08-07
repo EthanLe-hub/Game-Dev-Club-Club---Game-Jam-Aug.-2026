@@ -6,5 +6,8 @@ using UnityEngine;
 **/
 public class Cook : Character
 {
-    
+    void Start()
+    {
+        dialogue = ScriptableObject.CreateInstance<CookDialogue>();
+    }
 }

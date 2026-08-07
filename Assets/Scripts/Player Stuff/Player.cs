@@ -23,7 +23,7 @@ public class Player : MonoBehaviour
     float gravity = 10f;  
     Vector3 desiredMoveDirection; // Movement calculated in relation to where the camera is facing. 
     Vector3 officialMoveDirection; // Final calculated movement direction with speed incorporated. 
-    bool isTalking = false; // Flag used when talking to other characters. 
+    public bool isTalking = false; // Flag used when talking to other characters. 
 
     Animator animator; // Likely being attached in the child of the GameObject holding this script. 
     CharacterController playerController; // The component that moves the actual player entity. 

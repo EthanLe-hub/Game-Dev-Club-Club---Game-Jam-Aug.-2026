@@ -18,7 +18,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] Engineer engineer;
     [SerializeField] Doctor doctor;
     [SerializeField] RichGuy guy;
-    [SerializeField] RichGirl girl; 
+    [SerializeField] RichGirl girl;
+
+    // Current day
+    public int day = 1;
 
     void Awake() 
     {
