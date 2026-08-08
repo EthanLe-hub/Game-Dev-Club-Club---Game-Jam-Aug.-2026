@@ -62,6 +62,22 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        // Disable movement during cutscene, re-enable movement when cutscene is over:
+        if (GameManager.Instance.isCutsceneActive && controls.asset.enabled)
+        {
+            OnDisable(); // Turn off player movement if cutscene is playing. 
+        }
+        else if (!GameManager.Instance.isCutsceneActive && !controls.asset.enabled)
+        {
+            OnEnable(); // Turn on player movement again if cutscene is no longer playing. 
+        }
+
+        // Logic to move on from the death cutscene when it plays:
+        if (GameManager.Instance.isCutsceneActive && Keyboard.current.spaceKey.wasPressedThisFrame)
+        {
+            GameManager.Instance.HelperCloseCutscene(); 
+        }
+
         // (1) Capture camera angles:
         camForward = playerCamera.transform.forward; 
         camRight = playerCamera.transform.right; 

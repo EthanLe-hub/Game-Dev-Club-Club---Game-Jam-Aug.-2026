@@ -24,9 +24,9 @@ public class DialogueManager : MonoBehaviour
 
     void Awake()
     {
-        textObject = transform.GetChild(1).gameObject;
-        textMP = transform.GetChild(1).GetComponent<TextMeshProUGUI>();
-        options = transform.GetChild(2).gameObject;
+        textObject = transform.GetChild(2).gameObject;
+        textMP = transform.GetChild(2).GetComponent<TextMeshProUGUI>();
+        options = transform.GetChild(3).gameObject;
     }
 
     void Update()
@@ -42,10 +42,10 @@ public class DialogueManager : MonoBehaviour
 
         speaking = c;
         dialogueFile = speaking.dialogue;
-        day = GameManager.Instance.day;
+        day = GameManager.Instance.currentDay;
         switch (day)
         {
-            case 1:
+            case 0:
                 dict = dialogueFile.day1;
                 break;
             default:
@@ -93,7 +93,7 @@ public class DialogueManager : MonoBehaviour
                 int index = i;
 
                 Button b = Instantiate(button, options.transform);
-                b.GetComponentInChildren<TextMeshProUGUI>().text = dialogueFile.questions[day - 1, i];
+                b.GetComponentInChildren<TextMeshProUGUI>().text = dialogueFile.questions[day, i];
                 b.onClick.AddListener(() => ButtonClicked(index));
 
                 textObject.SetActive(false);
