@@ -1114,6 +1114,7 @@ MonoBehaviour:
   isImposter: 0
   regularTexts: []
   imposterTexts: []
+  deathSprite: {fileID: 0}
   OnThrowingOut:
     m_PersistentCalls:
       m_Calls: []
@@ -1447,7 +1448,7 @@ MonoBehaviour:
   interactionDistance: 9
   interactionMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 55
   interactionRef: {fileID: 1781555164194001046, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!1 &759323346
 GameObject:
@@ -1581,7 +1582,6 @@ MonoBehaviour:
   panelUI: {fileID: 1754416658}
   cutsceneImage: {fileID: 543449028}
   fadeCanvasGroup: {fileID: 759323347}
-
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1756,6 +1756,7 @@ MonoBehaviour:
   isImposter: 0
   regularTexts: []
   imposterTexts: []
+  deathSprite: {fileID: 0}
   OnThrowingOut:
     m_PersistentCalls:
       m_Calls: []
@@ -2150,6 +2151,7 @@ MonoBehaviour:
   isImposter: 0
   regularTexts: []
   imposterTexts: []
+  deathSprite: {fileID: 0}
   OnThrowingOut:
     m_PersistentCalls:
       m_Calls: []
@@ -2288,6 +2290,7 @@ MonoBehaviour:
   isImposter: 0
   regularTexts: []
   imposterTexts: []
+  deathSprite: {fileID: 0}
   OnThrowingOut:
     m_PersistentCalls:
       m_Calls: []
@@ -2759,6 +2762,7 @@ MonoBehaviour:
   isImposter: 0
   regularTexts: []
   imposterTexts: []
+  deathSprite: {fileID: 0}
   OnThrowingOut:
     m_PersistentCalls:
       m_Calls: []
@@ -2964,13 +2968,8 @@ MonoBehaviour:
   - {fileID: 992822016}
   - {fileID: 1737447589}
   dayStartPositions: []
-  navOfficerDead: {fileID: 21300000, guid: f9312077367f0324aa4baa1e81ca6656, type: 3}
-  cookDead: {fileID: 21300000, guid: f9312077367f0324aa4baa1e81ca6656, type: 3}
-  engineerDead: {fileID: 21300000, guid: f9312077367f0324aa4baa1e81ca6656, type: 3}
-  doctorDead: {fileID: 21300000, guid: f9312077367f0324aa4baa1e81ca6656, type: 3}
-  richGuyDead: {fileID: 21300000, guid: f9312077367f0324aa4baa1e81ca6656, type: 3}
-  richGirlDead: {fileID: 21300000, guid: f9312077367f0324aa4baa1e81ca6656, type: 3}
   cutsceneUI: {fileID: 759323352}
+  isCutsceneActive: 0
 --- !u!4 &1786689593
 Transform:
   m_ObjectHideFlags: 0
@@ -3445,6 +3444,7 @@ MonoBehaviour:
   isImposter: 0
   regularTexts: []
   imposterTexts: []
+  deathSprite: {fileID: 0}
   OnThrowingOut:
     m_PersistentCalls:
       m_Calls: []

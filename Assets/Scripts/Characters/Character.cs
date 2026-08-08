@@ -9,8 +9,10 @@ public class Character : MonoBehaviour
 {
     public bool isImposter = false; 
 
-    [SerializeField] string[] regularTexts; // Fill in via Unity Inspector with character's appropriate dialogue (when not imposter). 
-    [SerializeField] string[] imposterTexts; // Fill in via Unity Inspector with character's dialogue as imposter. 
+    [SerializeField] string[] regularTexts; // Fill in via Unity Inspector with character's appropriate dialogue (when not imposter).
+    [SerializeField] string[] imposterTexts; // Fill in via Unity Inspector with character's dialogue as imposter.
+
+    public Sprite deathSprite; // Fill in via Unity Inspector with the cutscene image to show when this character dies.
 
     // Unity Events for other scripts to subscribe to: 
     // Subclass scripts will subscribe to these events and add listeners to them in their own scripts:

@@ -28,14 +28,6 @@ public class GameManager : MonoBehaviour
     private Character characterJustKilled; // Character who was just killed (needed to display the appropriate death cutscene image). 
     private int choicesLeft = 3;
 
-    // Assign cutscene images in Unity Inspector:
-    [SerializeField] Sprite navOfficerDead; 
-    [SerializeField] Sprite cookDead;
-    [SerializeField] Sprite engineerDead;
-    [SerializeField] Sprite doctorDead;
-    [SerializeField] Sprite richGuyDead;
-    [SerializeField] Sprite richGirlDead; 
-
     [SerializeField] CutsceneUI cutsceneUI; // Script to show death scene of new character each day.
     public bool isCutsceneActive = false; // True when a death scene is showing at the start of each day. 
 
@@ -139,38 +131,17 @@ public class GameManager : MonoBehaviour
             cutsceneUI.StartOfGame(); 
         }
 
-        else if (currentDay != 0) // If it is after the intro day (after Day 0), then show death cutscenes (no deaths on Day 0): 
+        else if (currentDay != 0) // If it is after the intro day (after Day 0), then show death cutscenes (no deaths on Day 0):
         {
-            switch (characterJustKilled)
+            if (characterJustKilled != null)
             {
-                case NavigationOfficer:
-                    Debug.Log("Nav Officer death scene is showing"); 
-                    cutsceneUI.ShowDeathScene(navOfficerDead); // Send cutscene image to display in CutsceneUI.cs script.
-                    break; 
-                case Cook:
-                    Debug.Log("Cook death scene is showing"); 
-                    cutsceneUI.ShowDeathScene(cookDead); // Send cutscene image to display in CutsceneUI.cs script. 
-                    break; 
-                case Engineer: 
-                    Debug.Log("Engineer death scene is showing"); 
-                    cutsceneUI.ShowDeathScene(engineerDead); // Send cutscene image to display in CutsceneUI.cs script.
-                    break; 
-                case Doctor: 
-                    Debug.Log("Doctor death scene is showing"); 
-                    cutsceneUI.ShowDeathScene(doctorDead); // Send cutscene image to display in CutsceneUI.cs script.
-                    break; 
-                case RichGuy:
-                    Debug.Log("Rich Guy death scene is showing"); 
-                    cutsceneUI.ShowDeathScene(richGuyDead); // Send cutscene image to display in CutsceneUI.cs script.
-                    break;
-                case RichGirl: 
-                    Debug.Log("Rich Girl death scene is showing"); 
-                    cutsceneUI.ShowDeathScene(richGirlDead); // Send cutscene image to display in CutsceneUI.cs script.
-                    break; 
-                default:
-                    Debug.Log("No deaths tonight!"); 
-                    cutsceneUI.CloseCutscene(); // No death cutscene to display. 
-                    break; 
+                Debug.Log(characterJustKilled.name + " death scene is showing");
+                cutsceneUI.ShowDeathScene(characterJustKilled.deathSprite); // Send cutscene image to display in CutsceneUI.cs script.
+            }
+            else
+            {
+                Debug.Log("No deaths tonight!");
+                cutsceneUI.CloseCutscene(); // No death cutscene to display.
             }
         }
 
