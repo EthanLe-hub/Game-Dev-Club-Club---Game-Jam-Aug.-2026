@@ -27,6 +27,16 @@ public class GameManager : MonoBehaviour
     private Character currentImposter;
     private int choicesLeft = 3;
 
+    // Assign cutscene images in Unity Inspector:
+    [SerializeField] Sprite navOfficerDead; 
+    [SerializeField] Sprite cookDead;
+    [SerializeField] Sprite engineerDead;
+    [SerializeField] Sprite doctorDead;
+    [SerializeField] Sprite richGuyDead;
+    [SerializeField] Sprite richGirlDead; 
+
+    [SerializeField] CutsceneUI cutsceneUI; // Script to show death scene of new character each day.
+
     // whether tonight's door visitor is the imposter, rolled at NightStart and resolved by OpenDoor().
     private bool doorVisitorIsImposter;
 
@@ -114,6 +124,30 @@ public class GameManager : MonoBehaviour
 
         if (currentDay == 0) choicesLeft = 10;
         else choicesLeft = 3;
+
+        switch (currentImposter)
+        {
+            case NavigationOfficer:
+                cutsceneUI.ShowDeathScene(navOfficerDead); // Send cutscene image to display in CutsceneUI.cs script.
+                break; 
+            case Cook:
+                cutsceneUI.ShowDeathScene(cookDead); // Send cutscene image to display in CutsceneUI.cs script. 
+                break; 
+            case Engineer: 
+                cutsceneUI.ShowDeathScene(engineerDead); // Send cutscene image to display in CutsceneUI.cs script.
+                break; 
+            case Doctor: 
+                cutsceneUI.ShowDeathScene(doctorDead); // Send cutscene image to display in CutsceneUI.cs script.
+                break; 
+            case RichGuy:
+                cutsceneUI.ShowDeathScene(richGuyDead); // Send cutscene image to display in CutsceneUI.cs script.
+                break;
+            case RichGirl: 
+                cutsceneUI.ShowDeathScene(richGirlDead); // Send cutscene image to display in CutsceneUI.cs script.
+                break; 
+            default:
+                break; 
+        }
 
         Debug.Log("[GameManager] Day " + currentDay + " start, choicesLeft = " + choicesLeft);
 
