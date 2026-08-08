@@ -36,13 +36,13 @@ public class CutsceneUI : MonoBehaviour
         StartCoroutine(StartTransitionToDeathScene()); 
     }
 
-    void CloseCutscene()
+    public void CloseCutscene()
     {
         if (isTransitioning) // Prevent transition from triggering twice at the same time. 
         {
             return; 
         }
-        
+
         // startingAlpha = 1 (completely colored), endingAlpha = 0 (completely uncolored / invisible). 
         StartCoroutine(StartTransitionToNewDay());
     }
@@ -50,6 +50,7 @@ public class CutsceneUI : MonoBehaviour
     IEnumerator StartTransitionToDeathScene()
     {
         isTransitioning = true; // Mark as true so we do not accidentally have multiple transitions playing at once. 
+        GameManager.Instance.isCutsceneActive = true; // Death cutscene is playing, so turn flag on to disable player movement.
 
         // (1) Do not allow any UI interactions during transition: 
         fadeCanvasGroup.blocksRaycasts = true; 
@@ -87,6 +88,7 @@ public class CutsceneUI : MonoBehaviour
         // (5) Allow UI interactions since transition is now complete: 
         fadeCanvasGroup.blocksRaycasts = false; 
         isTransitioning = false; // Transition is now done. 
+        GameManager.Instance.isCutsceneActive = false; // Death cutscene is over, so turn flag off to re-enable player movement again. 
     }
 
     // Function that fades the screen in and out:

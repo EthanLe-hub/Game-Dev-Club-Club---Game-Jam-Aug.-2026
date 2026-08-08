@@ -36,6 +36,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] Sprite richGirlDead; 
 
     [SerializeField] CutsceneUI cutsceneUI; // Script to show death scene of new character each day.
+    public bool isCutsceneActive = false; // True when a death scene is showing at the start of each day. 
 
     // whether tonight's door visitor is the imposter, rolled at NightStart and resolved by OpenDoor().
     private bool doorVisitorIsImposter;
@@ -128,21 +129,27 @@ public class GameManager : MonoBehaviour
         switch (currentImposter)
         {
             case NavigationOfficer:
+                Debug.Log("Nav Officer death scene is showing"); 
                 cutsceneUI.ShowDeathScene(navOfficerDead); // Send cutscene image to display in CutsceneUI.cs script.
                 break; 
             case Cook:
+                Debug.Log("Cook death scene is showing"); 
                 cutsceneUI.ShowDeathScene(cookDead); // Send cutscene image to display in CutsceneUI.cs script. 
                 break; 
             case Engineer: 
+                Debug.Log("Engineer death scene is showing"); 
                 cutsceneUI.ShowDeathScene(engineerDead); // Send cutscene image to display in CutsceneUI.cs script.
                 break; 
             case Doctor: 
+                Debug.Log("Doctor death scene is showing"); 
                 cutsceneUI.ShowDeathScene(doctorDead); // Send cutscene image to display in CutsceneUI.cs script.
                 break; 
             case RichGuy:
+                Debug.Log("Rich Guy death scene is showing"); 
                 cutsceneUI.ShowDeathScene(richGuyDead); // Send cutscene image to display in CutsceneUI.cs script.
                 break;
             case RichGirl: 
+                Debug.Log("Rich Girl death scene is showing"); 
                 cutsceneUI.ShowDeathScene(richGirlDead); // Send cutscene image to display in CutsceneUI.cs script.
                 break; 
             default:
@@ -360,4 +367,9 @@ public class GameManager : MonoBehaviour
         character.isDead = true;
     }
 
+    // Helper function to close death cutscene once player presses Spacebar key (called in Player.cs):
+    public void HelperCloseCutscene()
+    {
+        cutsceneUI.CloseCutscene(); 
+    }
 }

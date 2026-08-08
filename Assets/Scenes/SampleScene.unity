@@ -1447,7 +1447,7 @@ MonoBehaviour:
   interactionDistance: 9
   interactionMask:
     serializedVersion: 2
-    m_Bits: 55
+    m_Bits: 4294967295
   interactionRef: {fileID: 1781555164194001046, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!1 &759323346
 GameObject:
