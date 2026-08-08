@@ -15,7 +15,10 @@ public class Character : MonoBehaviour
     // Unity Events for other scripts to subscribe to: 
     // Subclass scripts will subscribe to these events and add listeners to them in their own scripts:
     [HideInInspector] public UnityEvent OnThrowingOut = new UnityEvent(); 
-    [HideInInspector] public UnityEvent OnLockingUp = new UnityEvent(); 
+    [HideInInspector] public UnityEvent OnLockingUp = new UnityEvent();
+
+    public bool isDead; 
+    public bool isLockedUp;
 
     // Function called when player selects character to throw out of the submarine:
     public void ThrowOut()
