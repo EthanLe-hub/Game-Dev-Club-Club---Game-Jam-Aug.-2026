@@ -1581,6 +1581,7 @@ MonoBehaviour:
   panelUI: {fileID: 1754416658}
   cutsceneImage: {fileID: 543449028}
   fadeCanvasGroup: {fileID: 759323347}
+
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
