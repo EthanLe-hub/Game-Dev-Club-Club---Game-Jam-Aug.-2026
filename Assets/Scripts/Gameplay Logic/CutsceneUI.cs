@@ -47,6 +47,18 @@ public class CutsceneUI : MonoBehaviour
         StartCoroutine(StartTransitionToNewDay());
     }
 
+    // Called on Day 0 (to open the game from black screen):
+    public void StartOfGame()
+    {
+        if (isTransitioning) // Prevent transition from triggering twice at the same time. 
+        {
+            return; 
+        }
+
+        // startingAlpha = 1 (completely colored), endingAlpha = 0 (completely uncolored / invisible). 
+        StartCoroutine(Fading(1, 0));
+    }
+
     IEnumerator StartTransitionToDeathScene()
     {
         isTransitioning = true; // Mark as true so we do not accidentally have multiple transitions playing at once. 

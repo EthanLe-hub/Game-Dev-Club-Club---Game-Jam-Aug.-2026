@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
 
     private int currentDay = 0;
     private Character currentImposter;
+    private Character characterJustKilled; // Character who was just killed (needed to display the appropriate death cutscene image). 
     private int choicesLeft = 3;
 
     // Assign cutscene images in Unity Inspector:
@@ -59,6 +60,13 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject); 
 
         StartGame(); 
+
+        /** Testing the start of a brand new day after Day 0: **/
+        /*
+        currentImposter = characters[0]; 
+        ImposterKillsSomeone(); 
+        NightEnd(); 
+        */ 
     }
 
     void TransitionTo(GameState newState)
@@ -126,34 +134,44 @@ public class GameManager : MonoBehaviour
         if (currentDay == 0) choicesLeft = 10;
         else choicesLeft = 3;
 
-        switch (currentImposter)
+        if (currentDay == 0) // If it is intro day (Day 0), simply open up to gameplay from black screen (no deaths on Day 0):
         {
-            case NavigationOfficer:
-                Debug.Log("Nav Officer death scene is showing"); 
-                cutsceneUI.ShowDeathScene(navOfficerDead); // Send cutscene image to display in CutsceneUI.cs script.
-                break; 
-            case Cook:
-                Debug.Log("Cook death scene is showing"); 
-                cutsceneUI.ShowDeathScene(cookDead); // Send cutscene image to display in CutsceneUI.cs script. 
-                break; 
-            case Engineer: 
-                Debug.Log("Engineer death scene is showing"); 
-                cutsceneUI.ShowDeathScene(engineerDead); // Send cutscene image to display in CutsceneUI.cs script.
-                break; 
-            case Doctor: 
-                Debug.Log("Doctor death scene is showing"); 
-                cutsceneUI.ShowDeathScene(doctorDead); // Send cutscene image to display in CutsceneUI.cs script.
-                break; 
-            case RichGuy:
-                Debug.Log("Rich Guy death scene is showing"); 
-                cutsceneUI.ShowDeathScene(richGuyDead); // Send cutscene image to display in CutsceneUI.cs script.
-                break;
-            case RichGirl: 
-                Debug.Log("Rich Girl death scene is showing"); 
-                cutsceneUI.ShowDeathScene(richGirlDead); // Send cutscene image to display in CutsceneUI.cs script.
-                break; 
-            default:
-                break; 
+            cutsceneUI.StartOfGame(); 
+        }
+
+        else if (currentDay != 0) // If it is after the intro day (after Day 0), then show death cutscenes (no deaths on Day 0): 
+        {
+            switch (characterJustKilled)
+            {
+                case NavigationOfficer:
+                    Debug.Log("Nav Officer death scene is showing"); 
+                    cutsceneUI.ShowDeathScene(navOfficerDead); // Send cutscene image to display in CutsceneUI.cs script.
+                    break; 
+                case Cook:
+                    Debug.Log("Cook death scene is showing"); 
+                    cutsceneUI.ShowDeathScene(cookDead); // Send cutscene image to display in CutsceneUI.cs script. 
+                    break; 
+                case Engineer: 
+                    Debug.Log("Engineer death scene is showing"); 
+                    cutsceneUI.ShowDeathScene(engineerDead); // Send cutscene image to display in CutsceneUI.cs script.
+                    break; 
+                case Doctor: 
+                    Debug.Log("Doctor death scene is showing"); 
+                    cutsceneUI.ShowDeathScene(doctorDead); // Send cutscene image to display in CutsceneUI.cs script.
+                    break; 
+                case RichGuy:
+                    Debug.Log("Rich Guy death scene is showing"); 
+                    cutsceneUI.ShowDeathScene(richGuyDead); // Send cutscene image to display in CutsceneUI.cs script.
+                    break;
+                case RichGirl: 
+                    Debug.Log("Rich Girl death scene is showing"); 
+                    cutsceneUI.ShowDeathScene(richGirlDead); // Send cutscene image to display in CutsceneUI.cs script.
+                    break; 
+                default:
+                    Debug.Log("No deaths tonight!"); 
+                    cutsceneUI.CloseCutscene(); // No death cutscene to display. 
+                    break; 
+            }
         }
 
         Debug.Log("[GameManager] Day " + currentDay + " start, choicesLeft = " + choicesLeft);
@@ -255,7 +273,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("A crewmate gives you a clue about the imposter.");
     }
 
-    // imposter either kills its own host (and possesses a different alive character) or kills someone else.
+    // imposter either kills its own host (and possesses a different alive character), kills someone else, or does not kill.
     void ImposterKillsSomeone()
     {
         if (currentImposter == null || 
@@ -263,9 +281,15 @@ public class GameManager : MonoBehaviour
             currentImposter.isLockedUp) return;
 
         bool killsHost = Random.value < killSelfChance;
+        bool killsCrewmate = Random.value < killChance; 
 
         if (killsHost) PossessNewHost();
-        else KillRandomCrewmate();
+        else if (killsCrewmate) KillRandomCrewmate();
+        else // If imposter does not kill anyone that night, do nothing except setting "characterJustKilled" to null (so the same death scene does not play again the next day).
+        {
+            characterJustKilled = null; 
+            return; 
+        }
     }
 
     // imposter kills its current host body and jumps into a different alive character.
@@ -273,6 +297,7 @@ public class GameManager : MonoBehaviour
     {
         currentImposter.isDead = true;
         currentImposter.isImposter = false;
+        characterJustKilled = currentImposter; // Imposter killed its current host body, so that was the character who was just killed. 
 
         List<Character> candidates = GetAliveExcept(currentImposter);
         if (candidates.Count == 0)
@@ -295,6 +320,7 @@ public class GameManager : MonoBehaviour
 
         Character victim = candidates[Random.Range(0, candidates.Count)];
         victim.isDead = true;
+        characterJustKilled = victim; // Random victim was killed, so assign it as the character who was just killed. 
 
         Debug.Log(victim.name + " was killed during the night.");
     }
