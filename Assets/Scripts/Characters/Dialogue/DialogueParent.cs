@@ -5,7 +5,11 @@ public abstract class DialogueParent : ScriptableObject
 {
     public enum Section { Intro, Q1, Q2, Q3 };
 
-    public Dictionary<Section, string[]> day1;
+    public string[] day0;
+
+    public Dictionary<Section, string[]>[] day1;
 
     public string[,] questions;
+
+    public Dictionary<string, string[]>[] deathDialogue;
 }

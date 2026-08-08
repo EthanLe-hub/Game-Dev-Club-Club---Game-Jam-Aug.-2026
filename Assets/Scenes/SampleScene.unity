@@ -1889,6 +1889,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3568a583b5c4247458b460df91cf3f51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Dialogue
+  cTest: {fileID: 1393123802}
   button: {fileID: 9194632820636055824, guid: c47664c592d3d624ca990a40e16dda44, type: 3}
 --- !u!1 &1323196762
 GameObject:
@@ -2653,6 +2654,7 @@ MonoBehaviour:
   - {fileID: 1737447589}
   dayStartPositions: []
   currentDay: 0
+  characterJustKilled: {fileID: 0}
   cutsceneUI: {fileID: 759323352}
   isCutsceneActive: 0
   paused: 0

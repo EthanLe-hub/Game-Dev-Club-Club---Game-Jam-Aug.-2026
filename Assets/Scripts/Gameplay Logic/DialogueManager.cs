@@ -46,16 +46,28 @@ public class DialogueManager : MonoBehaviour
         switch (day)
         {
             case 0:
-                dict = dialogueFile.day1;
+                dict = null;
+                currentLine = dialogueFile.day0;
+                curIndex = 0;
+                textMP.text = currentLine[curIndex];
+                StartCoroutine(EnableDialogueAfterFrame());
+                return;
+            case 1:
+                dict = dialogueFile.day1[c.isImposter ? 1 : 0];
                 break;
             default:
                 Debug.LogError("Day index outside of bounds: " + day);
                 break;
         }
 
+        string deadCharacter = GameManager.Instance.characterJustKilled.GetType().Name;
+        dialogueFile.questions[day - 1, 0] = "What are your throughts on " + deadCharacter + "'s death?";
+        dict[DialogueParent.Section.Q1] = dialogueFile.deathDialogue[c.isImposter ? 1 : 0][deadCharacter];
+
         currentLine = dict[DialogueParent.Section.Intro];
         curIndex = 0;
         textMP.text = currentLine[curIndex];
+
 
         StartCoroutine(EnableDialogueAfterFrame());
     }
@@ -86,6 +98,10 @@ public class DialogueManager : MonoBehaviour
         {
             textMP.text = currentLine[curIndex];
         }
+        else if (dict == null)
+        {
+            endDialogue();
+        }
         else if (options.transform.childCount == 0)
         {
             for (int i=0; i<3; i++)
@@ -93,7 +109,7 @@ public class DialogueManager : MonoBehaviour
                 int index = i;
 
                 Button b = Instantiate(button, options.transform);
-                b.GetComponentInChildren<TextMeshProUGUI>().text = dialogueFile.questions[day, i];
+                b.GetComponentInChildren<TextMeshProUGUI>().text = dialogueFile.questions[day - 1, i];
                 b.onClick.AddListener(() => ButtonClicked(index));
 
                 textObject.SetActive(false);

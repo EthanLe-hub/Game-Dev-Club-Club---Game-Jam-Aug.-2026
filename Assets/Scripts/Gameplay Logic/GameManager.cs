@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour
 
     public int currentDay = 0;
     private Character currentImposter;
-    private Character characterJustKilled; // Character who was just killed (needed to display the appropriate death cutscene image). 
+    public Character characterJustKilled; // Character who was just killed (needed to display the appropriate death cutscene image). 
     private int choicesLeft = 3;
 
     [SerializeField] CutsceneUI cutsceneUI; // Script to show death scene of new character each day.
