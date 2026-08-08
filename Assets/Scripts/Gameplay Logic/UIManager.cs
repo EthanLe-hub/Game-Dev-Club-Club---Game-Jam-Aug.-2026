@@ -34,7 +34,8 @@ public class UIManager : MonoBehaviour
     }
 
     public void endDialogue()
-    { 
+    {
+        dialoguePanel.endDialogue();
         dialoguePanel.gameObject.SetActive(false);
         player.isTalking = false;
         panelOpen = false;

@@ -18,7 +18,7 @@ public class CookDialogue : DialogueParent
                 "This is a singlestage answer. What else do you want me to say?"
             } },
             {Section.Q3, new[] {
-                "This is a singlestage answer. What else do you want me to say?"
+                "IDKKKKKKK"
             } }
         };
 

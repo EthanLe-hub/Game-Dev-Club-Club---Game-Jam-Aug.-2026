@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
 
@@ -12,6 +13,8 @@ public class Dialogue : MonoBehaviour
     private string[] currentLine;
     private int day;
     private int curIndex;
+
+    [SerializeField] public Button button;
 
     GameObject textObject;
     TextMeshProUGUI textMP;
@@ -26,18 +29,12 @@ public class Dialogue : MonoBehaviour
 
     void Update()
     {
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
-        {
-            next();
-        }
+        if (Keyboard.current.spaceKey.wasPressedThisFrame) next();
+        if (Keyboard.current.escapeKey.wasPressedThisFrame) UIManager.Instance.endDialogue();
     }
 
     public void startDialogue(Character c)
     {
-        if (c == null) Debug.Log("Character c is null");
-        if (c.dialogue == null) Debug.Log("Dialogue file is null");
-
-
         textObject.SetActive(true);
         options.SetActive(false);
 
@@ -57,8 +54,19 @@ public class Dialogue : MonoBehaviour
         currentLine = dict[DialogueParent.Section.Intro];
         curIndex = 0;
         textMP.text = currentLine[curIndex];
+
+
     }
-    
+
+    public void endDialogue()
+    {
+        for (int i = options.transform.childCount - 1; i >= 0; i--)
+        {
+            GameObject.Destroy(options.transform.GetChild(i).gameObject);
+        }
+    }
+
+
     private void next()
     {
         curIndex++;
@@ -66,9 +74,49 @@ public class Dialogue : MonoBehaviour
         {
             textMP.text = currentLine[curIndex];
         }
-        else
+        else if (options.transform.childCount == 0)
         {
-            UIManager.Instance.endDialogue();
+            for (int i=0; i<3; i++)
+            {
+                int index = i;
+
+                Button b = Instantiate(button, options.transform);
+                b.GetComponentInChildren<TextMeshProUGUI>().text = dialogueFile.questions[day - 1, i];
+                b.onClick.AddListener(() => ButtonClicked(index));
+
+                textObject.SetActive(false);
+                options.SetActive(true);
+            }
         }
+    }
+
+    private void ButtonClicked(int index)
+    {
+        switch (index)
+        {
+            case 0:
+                currentLine = dict[DialogueParent.Section.Q1];
+                break;
+            case 1:
+                currentLine = dict[DialogueParent.Section.Q2];
+                break;
+            case 2:
+                currentLine = dict[DialogueParent.Section.Q3];
+                break;
+            default:
+                Debug.LogError("Question Index out of Bounds: " + index);
+                break;
+        }
+
+        curIndex = 0;
+        textMP.text = currentLine[curIndex];
+
+        for (int i = options.transform.childCount - 1; i >= 0; i--)
+        {
+            GameObject.Destroy(options.transform.GetChild(i).gameObject);
+        }
+
+        textObject.SetActive(true);
+        options.SetActive(false);
     }
 }
