@@ -2,9 +2,10 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Collections;
 using TMPro;
 
-public class Dialogue : MonoBehaviour
+public class DialogueManager : MonoBehaviour
 {
     private Character speaking;
     private DialogueParent dialogueFile;
@@ -13,6 +14,7 @@ public class Dialogue : MonoBehaviour
     private string[] currentLine;
     private int day;
     private int curIndex;
+    private bool canAdvance = false;
 
     [SerializeField] public Button button;
 
@@ -29,8 +31,8 @@ public class Dialogue : MonoBehaviour
 
     void Update()
     {
-        if (Keyboard.current.spaceKey.wasPressedThisFrame) next();
-        if (Keyboard.current.escapeKey.wasPressedThisFrame) UIManager.Instance.endDialogue();
+        if (Keyboard.current.spaceKey.wasPressedThisFrame && canAdvance) next();
+        if (Keyboard.current.escapeKey.wasPressedThisFrame) endDialogue();
     }
 
     public void startDialogue(Character c)
@@ -55,15 +57,25 @@ public class Dialogue : MonoBehaviour
         curIndex = 0;
         textMP.text = currentLine[curIndex];
 
+        StartCoroutine(EnableDialogueAfterFrame());
+    }
 
+    private IEnumerator EnableDialogueAfterFrame()
+    {
+        yield return null;
+        canAdvance = true;
     }
 
     public void endDialogue()
     {
+        canAdvance = false;
+
         for (int i = options.transform.childCount - 1; i >= 0; i--)
         {
             GameObject.Destroy(options.transform.GetChild(i).gameObject);
         }
+
+        UIManager.Instance.endDialogue();
     }
 
 

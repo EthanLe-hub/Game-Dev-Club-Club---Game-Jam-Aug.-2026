@@ -23,6 +23,10 @@ public class GameManager : MonoBehaviour
     // Current day
     public int day = 1;
 
+    // Pause logic
+    public bool paused = false;
+    [SerializeField] GameObject player;
+
     void Awake() 
     {
         if (Instance != null) // If instance already exists, destroy newly created copy. 
@@ -82,5 +86,27 @@ public class GameManager : MonoBehaviour
         Debug.Log("Doctor imposter? " + doctor.isImposter);
         Debug.Log("Rich Guy imposter? " + guy.isImposter);
         Debug.Log("Rich Girl imposter? " + girl.isImposter);
+    }
+
+    public void pause()
+    {
+        paused = true;
+        Time.timeScale = 0f;
+
+        foreach (MonoBehaviour script in player.GetComponents<MonoBehaviour>())
+        {
+            script.enabled = false;
+        }
+    }
+
+    public void unpause()
+    {
+        paused = false;
+        Time.timeScale = 1f;
+
+        foreach (MonoBehaviour script in player.GetComponents<MonoBehaviour>())
+        {
+            script.enabled = true;
+        }
     }
 }

@@ -5,12 +5,10 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
 
-    [SerializeField] Dialogue dialoguePanel;
+    [SerializeField] DialogueManager dialoguePanel;
     [SerializeField] Player player;
 
     [SerializeField] Character test;
-
-    bool panelOpen = false;
 
     void Awake()
     {
@@ -27,7 +25,7 @@ public class UIManager : MonoBehaviour
 
     public void startDialogue(Character c)
     {
-        panelOpen = true;
+        GameManager.Instance.pause();
         player.isTalking = true;
         dialoguePanel.gameObject.SetActive(true);
         dialoguePanel.startDialogue(c);
@@ -35,17 +33,8 @@ public class UIManager : MonoBehaviour
 
     public void endDialogue()
     {
-        dialoguePanel.endDialogue();
         dialoguePanel.gameObject.SetActive(false);
         player.isTalking = false;
-        panelOpen = false;
-    }
-
-    void Update()
-    {
-        if (Keyboard.current.spaceKey.wasPressedThisFrame && !panelOpen)
-        {
-            startDialogue(test);
-        }
+        GameManager.Instance.unpause();
     }
 }
