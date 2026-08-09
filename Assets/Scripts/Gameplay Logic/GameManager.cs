@@ -12,6 +12,14 @@ public class GameManager : MonoBehaviour
     // Variable for determining who is the imposter in this playthrough:
     int imposterIndex;
 
+    // SerializedFields of the 6 different characters (excluding captain) who can potentially be imposters: 
+    // We retrieve their bool isImposter flags and set the according one to true. 
+    [SerializeField] NavigationOfficer navOfficer; 
+    [SerializeField] Cook cook;
+    [SerializeField] Engineer engineer;
+    [SerializeField] Doctor doctor;
+    [SerializeField] RichGuy guy;
+    [SerializeField] RichGirl girl;
     // chances the imposter does something, for easily adjustable difficulty
     public float killSelfChance = 0.4f;
     public float killChance = 0.5f;
@@ -26,9 +34,9 @@ public class GameManager : MonoBehaviour
     // all 6 characters (excluding captain) who can potentially be imposters or die:
     [SerializeField] Character[] characters;
 
-    private int currentDay = 0;
+    public int currentDay = 0;
     private Character currentImposter;
-    private Character characterJustKilled; // Character who was just killed (needed to display the appropriate death cutscene image). 
+    public Character characterJustKilled; // Character who was just killed (needed to display the appropriate death cutscene image). 
     private int choicesLeft = 3;
 
     [SerializeField] CutsceneUI cutsceneUI; // Script to show death scene of new character each day.
@@ -43,6 +51,10 @@ public class GameManager : MonoBehaviour
 
 
     private GameState currentState;
+
+    // Pause logic
+    public bool paused = false;
+    [SerializeField] GameObject player;
 
     void Awake() 
     {
@@ -374,10 +386,33 @@ public class GameManager : MonoBehaviour
         cutsceneUI.CloseCutscene(); 
     }
 
+
     void TeleportPlayer(Vector3 pos)
     {
         player.playerController.enabled = false;
         player.transform.position = pos;
         player.playerController.enabled = true;
+    }
+
+    public void pause()
+    {
+        paused = true;
+        Time.timeScale = 0f;
+
+        foreach (MonoBehaviour script in player.GetComponents<MonoBehaviour>())
+        {
+            script.enabled = false;
+        }
+    }
+
+    public void unpause()
+    {
+        paused = false;
+        Time.timeScale = 1f;
+
+        foreach (MonoBehaviour script in player.GetComponents<MonoBehaviour>())
+        {
+            script.enabled = true;
+        }
     }
 }
