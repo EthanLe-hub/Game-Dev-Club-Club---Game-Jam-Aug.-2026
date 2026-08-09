@@ -911,7 +911,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 481886005}
   m_CullTransparentMesh: 1
---- !u!1 &503153961
 --- !u!1 &490517552
 GameObject:
   m_ObjectHideFlags: 0
@@ -921,23 +920,15 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 503153962}
-  - component: {fileID: 503153965}
-  - component: {fileID: 503153964}
-  - component: {fileID: 503153963}
   m_Layer: 5
   m_Name: Option2
-  - component: {fileID: 490517553}
-  m_Layer: 0
-  m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &503153962
+--- !u!224 &490517553
 RectTransform:
---- !u!4 &490517553
-Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -947,14 +938,51 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1822408525}
+  m_Children: []
   m_Father: {fileID: 1839065955}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 305, y: 165}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &503153961
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 490517553}
+  - component: {fileID: 503153965}
+  - component: {fileID: 503153963}
+  - component: {fileID: 503153964}
+  m_Layer: 0
+  m_Name: 
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &503153962
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490517552}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &503153963
 MonoBehaviour:
@@ -1038,17 +1066,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 503153961}
   m_CullTransparentMesh: 1
-
-  m_GameObject: {fileID: 490517552}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.04, y: 0.24749, z: 0.35355}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 626167405}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &532017357
 GameObject:
   m_ObjectHideFlags: 0
@@ -1099,6 +1116,7 @@ MonoBehaviour:
   isImposter: 0
   dialogue: {fileID: 0}
   deathSprite: {fileID: 0}
+  possibleSpawnPoints: []
   OnThrowingOut:
     m_PersistentCalls:
       m_Calls: []
@@ -1267,151 +1285,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5114407871544446539, guid: d85eef044aecc4b6294458410a0b17b9, type: 3}
   m_PrefabInstance: {fileID: 8003107411898293029}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 626167404}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 490517553}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!143 &626167406
-CharacterController:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 626167404}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Height: 2
-  m_Radius: 0.5
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &626167407
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 626167404}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05766035d8944d741b019d4711fc597b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Player
-  isTalking: 0
---- !u!136 &626167408
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 626167404}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!23 &626167409
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 626167404}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_MaskInteraction: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!33 &626167410
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 626167404}
-  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &626167411
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 626167404}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63057dae69d294514937fe719655e695, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerInteractor
-  playerCamera: {fileID: 302611582}
-  interactionDistance: 9
-  interactionMask:
-    serializedVersion: 2
-    m_Bits: 55
-  interactionRef: {fileID: 1781555164194001046, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!1 &759323346
 GameObject:
   m_ObjectHideFlags: 0
@@ -1718,6 +1591,7 @@ MonoBehaviour:
   isImposter: 0
   dialogue: {fileID: 0}
   deathSprite: {fileID: 0}
+  possibleSpawnPoints: []
   OnThrowingOut:
     m_PersistentCalls:
       m_Calls: []
@@ -1836,7 +1710,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIManager
   dialoguePanel: {fileID: 1244513223}
-  player: {fileID: 626167407}
+  player: {fileID: 0}
   test: {fileID: 1323196764}
 --- !u!4 &1007343842
 Transform:
@@ -1972,7 +1846,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3568a583b5c4247458b460df91cf3f51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Dialogue
-  cTest: {fileID: 1393123802}
   button: {fileID: 9194632820636055824, guid: c47664c592d3d624ca990a40e16dda44, type: 3}
 --- !u!1 &1323196762
 GameObject:
@@ -2025,6 +1898,7 @@ MonoBehaviour:
   isImposter: 0
   dialogue: {fileID: 11400000, guid: 1697a734538195749bd40e6316146587, type: 2}
   deathSprite: {fileID: 0}
+  possibleSpawnPoints: []
   OnThrowingOut:
     m_PersistentCalls:
       m_Calls: []
@@ -2175,6 +2049,7 @@ MonoBehaviour:
   isImposter: 0
   dialogue: {fileID: 0}
   deathSprite: {fileID: 0}
+  possibleSpawnPoints: []
   OnThrowingOut:
     m_PersistentCalls:
       m_Calls: []
@@ -2525,6 +2400,7 @@ MonoBehaviour:
   isImposter: 0
   dialogue: {fileID: 0}
   deathSprite: {fileID: 0}
+  possibleSpawnPoints: []
   OnThrowingOut:
     m_PersistentCalls:
       m_Calls: []
@@ -2718,16 +2594,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6fb8322cf9719c47b8d98db4592f8e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  navOfficer: {fileID: 0}
-  cook: {fileID: 0}
-  engineer: {fileID: 0}
-  doctor: {fileID: 0}
-  guy: {fileID: 0}
-  girl: {fileID: 0}
   killSelfChance: 0.4
   killChance: 0.5
   imposterNightArrivalChance: 0.3
   maxDays: 5
+  nightSpawnPoint: {fileID: 0}
+  daySpawnPoint: {fileID: 0}
+  player: {fileID: 0}
   characters:
   - {fileID: 532017359}
   - {fileID: 1323196764}
@@ -2735,13 +2608,11 @@ MonoBehaviour:
   - {fileID: 2027007467}
   - {fileID: 992822016}
   - {fileID: 1737447589}
-  dayStartPositions: []
   currentDay: 0
   characterJustKilled: {fileID: 0}
   cutsceneUI: {fileID: 759323352}
   isCutsceneActive: 0
   paused: 0
-  player: {fileID: 626167404}
 --- !u!4 &1786689593
 Transform:
   m_ObjectHideFlags: 0
@@ -2899,7 +2770,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 490517553}
   m_Father: {fileID: 1244513222}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -3103,6 +2975,7 @@ MonoBehaviour:
   isImposter: 0
   dialogue: {fileID: 0}
   deathSprite: {fileID: 0}
+  possibleSpawnPoints: []
   OnThrowingOut:
     m_PersistentCalls:
       m_Calls: []
@@ -3340,3 +3213,4 @@ SceneRoots:
   - {fileID: 2118710233}
   - {fileID: 759323351}
   - {fileID: 1598585372}
+  - {fileID: 503153962}

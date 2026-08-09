@@ -18,15 +18,15 @@ public class DialogueManager : MonoBehaviour
 
     [SerializeField] public Button button;
 
-    GameObject textObject;
-    TextMeshProUGUI textMP;
-    GameObject options;
+    [SerializeField] GameObject textObject;
+    [SerializeField] TextMeshProUGUI textMP;
+    [SerializeField] GameObject options;
 
     void Awake()
     {
-        textObject = transform.GetChild(2).gameObject;
-        textMP = transform.GetChild(2).GetComponent<TextMeshProUGUI>();
-        options = transform.GetChild(3).gameObject;
+        //textObject = transform.GetChild(2).gameObject;
+        //textMP = transform.GetChild(2).GetComponent<TextMeshProUGUI>();
+        //options = transform.GetChild(3).gameObject;
     }
 
     void Update()
