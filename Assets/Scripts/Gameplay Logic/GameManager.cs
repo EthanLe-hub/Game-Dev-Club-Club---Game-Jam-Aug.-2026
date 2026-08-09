@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
     public Player player;
 
     // all 6 characters (excluding captain) who can potentially be imposters or die:
-    [SerializeField] Character[] characters;
+    [SerializeField] public Character[] characters;
 
     public int currentDay = 0;
     private Character currentImposter;
