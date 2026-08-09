@@ -17,15 +17,20 @@ public class AccusationUI : MonoBehaviour
     [SerializeField] Button[] actionButtons; // On the second child panel. 
     [SerializeField] Button yesButton; // On third child panel. 
     [SerializeField] Button noButton; // On third child panel. 
-    [SerializeField] Character[] characterScripts; 
+    //[SerializeField] Character[] characterScripts; 
 
     string firstPanelInstruction = "Who do you want to accuse tonight?"; 
+
+    string previousPanelInstruction; 
 
     string confirmDoNothing = "Are you sure you want to do nothing tonight?"; 
 
     string lockUpChosen = "Lock Up"; 
     string ejectChosen = "Eject"; 
     string doNothingChosen = "Do Nothing"; 
+
+    string yesCharChosen = "Yes";
+    string noCharChosen = "No"; 
 
     Character characterSelected; 
 
@@ -73,9 +78,6 @@ public class AccusationUI : MonoBehaviour
         actionButtons[1].onClick.AddListener(EjectClicked); 
         actionButtons[2].onClick.AddListener(GoBackClicked); 
         actionButtons[3].onClick.AddListener(DoNothingClicked); 
-
-        /** Confirmation Buttons (only No already has a listener because Yes is unique): **/
-        noButton.onClick.AddListener(NoClicked); 
     }
 
     void Start()
@@ -89,8 +91,9 @@ public class AccusationUI : MonoBehaviour
     {
         characterSelected = null; // Ensure selected character is always null when it is time to make an accusation. 
 
-        // Ensure the yes button does not have any listeners yet when it is time to make an accusation. 
+        // Ensure the yes and no buttons do not have any listeners yet when it is time to make an accusation. 
         yesButton.onClick.RemoveAllListeners();
+        noButton.onClick.RemoveAllListeners(); 
 
         accusationPanel.SetActive(true); 
 
@@ -109,11 +112,11 @@ public class AccusationUI : MonoBehaviour
 
     void NavOfficerClicked()
     {
-        for (int i = 0; i < characterScripts.Length; i++)
+        for (int i = 0; i < GameManager.Instance.characters.Length; i++)
         {
-            if (characterScripts[i] is NavigationOfficer)
+            if (GameManager.Instance.characters[i] is NavigationOfficer)
             {
-                characterSelected = characterScripts[i]; 
+                characterSelected = GameManager.Instance.characters[i]; 
                 break; 
             }
         }
@@ -124,7 +127,9 @@ public class AccusationUI : MonoBehaviour
             return; 
         }
 
-        instructionDisplay.text = "What do you want to do to the Navigation Officer?"; 
+        instructionDisplay.text = "What do you want to do to Leah?"; 
+
+        previousPanelInstruction = instructionDisplay.text; 
 
         characterSelectionPanel.SetActive(false); // Close first child panel. 
 
@@ -135,11 +140,11 @@ public class AccusationUI : MonoBehaviour
 
     void CookClicked()
     {
-        for (int i = 0; i < characterScripts.Length; i++)
+        for (int i = 0; i < GameManager.Instance.characters.Length; i++)
         {
-            if (characterScripts[i] is Cook)
+            if (GameManager.Instance.characters[i] is Cook)
             {
-                characterSelected = characterScripts[i]; 
+                characterSelected = GameManager.Instance.characters[i]; 
                 break; 
             }
         }
@@ -150,7 +155,9 @@ public class AccusationUI : MonoBehaviour
             return; 
         }
 
-        instructionDisplay.text = "What do you want to do to the Cook?"; 
+        instructionDisplay.text = "What do you want to do to Andy?"; 
+
+        previousPanelInstruction = instructionDisplay.text;
 
         characterSelectionPanel.SetActive(false); // Close first child panel. 
 
@@ -161,11 +168,11 @@ public class AccusationUI : MonoBehaviour
 
     void EngineerClicked()
     {
-        for (int i = 0; i < characterScripts.Length; i++)
+        for (int i = 0; i < GameManager.Instance.characters.Length; i++)
         {
-            if (characterScripts[i] is Engineer)
+            if (GameManager.Instance.characters[i] is Engineer)
             {
-                characterSelected = characterScripts[i]; 
+                characterSelected = GameManager.Instance.characters[i]; 
                 break; 
             }
         }
@@ -176,7 +183,9 @@ public class AccusationUI : MonoBehaviour
             return; 
         }
 
-        instructionDisplay.text = "What do you want to do to the Engineer?"; 
+        instructionDisplay.text = "What do you want to do to Ramona?"; 
+
+        previousPanelInstruction = instructionDisplay.text;
 
         characterSelectionPanel.SetActive(false); // Close first child panel. 
 
@@ -187,11 +196,11 @@ public class AccusationUI : MonoBehaviour
 
     void DoctorClicked()
     {
-        for (int i = 0; i < characterScripts.Length; i++)
+        for (int i = 0; i < GameManager.Instance.characters.Length; i++)
         {
-            if (characterScripts[i] is Doctor)
+            if (GameManager.Instance.characters[i] is Doctor)
             {
-                characterSelected = characterScripts[i]; 
+                characterSelected = GameManager.Instance.characters[i]; 
                 break; 
             }
         }
@@ -202,7 +211,9 @@ public class AccusationUI : MonoBehaviour
             return; 
         }
 
-        instructionDisplay.text = "What do you want to do to the Doctor/Scientist?"; 
+        instructionDisplay.text = "What do you want to do to Walter Black?"; 
+
+        previousPanelInstruction = instructionDisplay.text;
 
         characterSelectionPanel.SetActive(false); // Close first child panel. 
 
@@ -213,11 +224,11 @@ public class AccusationUI : MonoBehaviour
 
     void RichGuyClicked()
     {
-        for (int i = 0; i < characterScripts.Length; i++)
+        for (int i = 0; i < GameManager.Instance.characters.Length; i++)
         {
-            if (characterScripts[i] is RichGuy)
+            if (GameManager.Instance.characters[i] is RichGuy)
             {
-                characterSelected = characterScripts[i]; 
+                characterSelected = GameManager.Instance.characters[i]; 
                 break; 
             }
         }
@@ -228,7 +239,9 @@ public class AccusationUI : MonoBehaviour
             return; 
         }
 
-        instructionDisplay.text = "What do you want to do to the Rich Guy?"; 
+        instructionDisplay.text = "What do you want to do to Dick (Mr. Richard)?"; 
+
+        previousPanelInstruction = instructionDisplay.text;
 
         characterSelectionPanel.SetActive(false); // Close first child panel. 
 
@@ -239,11 +252,11 @@ public class AccusationUI : MonoBehaviour
 
     void RichGirlClicked()
     {
-        for (int i = 0; i < characterScripts.Length; i++)
+        for (int i = 0; i < GameManager.Instance.characters.Length; i++)
         {
-            if (characterScripts[i] is RichGirl)
+            if (GameManager.Instance.characters[i] is RichGirl)
             {
-                characterSelected = characterScripts[i]; 
+                characterSelected = GameManager.Instance.characters[i]; 
                 break; 
             }
         }
@@ -254,7 +267,9 @@ public class AccusationUI : MonoBehaviour
             return; 
         }
 
-        instructionDisplay.text = "What do you want to do to the Rich Girl?"; 
+        instructionDisplay.text = "What do you want to do to Mrs. Moola?"; 
+
+        previousPanelInstruction = instructionDisplay.text;
 
         characterSelectionPanel.SetActive(false); // Close first child panel. 
 
@@ -275,7 +290,7 @@ public class AccusationUI : MonoBehaviour
             return; 
         }
 
-        instructionDisplay.text = "Are you sure you want to lock up " + characterSelected.name + "?"; 
+        instructionDisplay.text = "Are you sure you want to lock up the " + characterSelected.name + "?"; 
 
         characterSelectionPanel.SetActive(false); // Close first child panel. 
 
@@ -283,8 +298,9 @@ public class AccusationUI : MonoBehaviour
 
         confirmationPanel.SetActive(true); // Open third child panel to confirm action. 
 
-        // Set up the unique Yes listener:
+        /** Confirmation Buttons (Yes and No have unique listeners in different functions): **/
         yesButton.onClick.AddListener(() => YesClicked(lockUpChosen));  
+        noButton.onClick.AddListener(() => NoClicked(yesCharChosen)); 
     }
 
     void EjectClicked()
@@ -295,7 +311,7 @@ public class AccusationUI : MonoBehaviour
             return; 
         }
 
-        instructionDisplay.text = "Are you sure you want to throw " + characterSelected.name + " overboard?"; 
+        instructionDisplay.text = "Are you sure you want to throw the " + characterSelected.name + " overboard?"; 
 
         characterSelectionPanel.SetActive(false); // Close first child panel. 
 
@@ -303,8 +319,9 @@ public class AccusationUI : MonoBehaviour
 
         confirmationPanel.SetActive(true); // Open third child panel to confirm action. 
 
-        // Set up the unique Yes listener:
+        /** Confirmation Buttons (Yes and No have unique listeners in different functions): **/
         yesButton.onClick.AddListener(() => YesClicked(ejectChosen));  
+        noButton.onClick.AddListener(() => NoClicked(yesCharChosen)); 
     }
 
     void GoBackClicked()
@@ -314,8 +331,11 @@ public class AccusationUI : MonoBehaviour
             characterSelected = null; 
         }
 
-        // Reset unique Yes listener:
+        // Reset unique Yes and No listeners:
         yesButton.onClick.RemoveAllListeners(); 
+        noButton.onClick.RemoveAllListeners(); 
+
+        instructionDisplay.text = firstPanelInstruction;
 
         characterSelectionPanel.SetActive(true); // Go back to first child panel. 
 
@@ -334,8 +354,9 @@ public class AccusationUI : MonoBehaviour
 
         confirmationPanel.SetActive(true); // Open third child panel to confirm action. 
 
-        // Set up the unique Yes listener:
-        yesButton.onClick.AddListener(() => YesClicked(doNothingChosen)); 
+        /** Confirmation Buttons (Yes and No have unique listeners in different functions): **/
+        yesButton.onClick.AddListener(() => YesClicked(doNothingChosen));  
+        noButton.onClick.AddListener(() => NoClicked(noCharChosen)); 
     }
 
     void YesClicked(string actionType)
@@ -360,21 +381,35 @@ public class AccusationUI : MonoBehaviour
 
         // Reset children panels to default active state, and close the parent panel:
         yesButton.onClick.RemoveAllListeners();
+        noButton.onClick.RemoveAllListeners(); 
         characterSelectionPanel.SetActive(true); 
         actionSelectionPanel.SetActive(true); 
         confirmationPanel.SetActive(true); 
         accusationPanel.SetActive(false); 
     }
 
-    void NoClicked()
-    {
+    void NoClicked(string wasCharacterSelected)
+    { 
         // Reset unique Yes listener:
         yesButton.onClick.RemoveAllListeners(); 
+        noButton.onClick.RemoveAllListeners(); 
 
-        characterSelectionPanel.SetActive(false); // Do not open first child panel yet. 
-
-        actionSelectionPanel.SetActive(true); // Re-open second child panel.
-
-        confirmationPanel.SetActive(false); // Close third child panel. 
+        switch (wasCharacterSelected)
+        {
+            case "Yes":
+                instructionDisplay.text = previousPanelInstruction; 
+                characterSelectionPanel.SetActive(false); // Do not open first child panel. 
+                actionSelectionPanel.SetActive(true); // Re-open second child panel.
+                confirmationPanel.SetActive(false); // Close third child panel.
+                break;
+            case "No":
+                instructionDisplay.text = firstPanelInstruction; 
+                characterSelectionPanel.SetActive(true); // Re-open first child panel. 
+                actionSelectionPanel.SetActive(false); // Do not open second child panel.
+                confirmationPanel.SetActive(false); // Close third child panel.
+                break; 
+            default:
+                break; 
+        } 
     }
 }

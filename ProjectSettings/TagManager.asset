@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Camera
   - Cutscene UI
+  - Accusation UI
   layers:
   - Default
   - TransparentFX
