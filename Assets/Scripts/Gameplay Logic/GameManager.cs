@@ -31,6 +31,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] CutsceneUI cutsceneUI; // Script to show death scene of new character each day.
     public bool isCutsceneActive = false; // True when a death scene is showing at the start of each day. 
 
+    [SerializeField] AccusationUI accusationUI; // Script to make accusation for the night. 
+
     // whether tonight's door visitor is the imposter, rolled at NightStart and resolved by OpenDoor().
     private bool doorVisitorIsImposter;
 
@@ -193,6 +195,8 @@ public class GameManager : MonoBehaviour
     void NightAccusation()
     {
         // waits for MakeAccusation() to be called by the accusation UI.
+
+        accusationUI.OpenAccusationPanel(); // Begin accusation choice. 
     }
 
     // called when the player locks someone up, throws someone overboard, or does nothing.
