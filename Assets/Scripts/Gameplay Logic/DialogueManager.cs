@@ -37,6 +37,8 @@ public class DialogueManager : MonoBehaviour
 
     public void startDialogue(Character c)
     {
+        GameManager.Instance.SpendChoice();
+
         textObject.SetActive(true);
         options.SetActive(false);
 

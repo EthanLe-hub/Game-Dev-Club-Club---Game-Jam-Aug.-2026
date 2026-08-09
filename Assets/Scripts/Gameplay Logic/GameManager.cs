@@ -12,14 +12,6 @@ public class GameManager : MonoBehaviour
     // Variable for determining who is the imposter in this playthrough:
     int imposterIndex;
 
-    // SerializedFields of the 6 different characters (excluding captain) who can potentially be imposters: 
-    // We retrieve their bool isImposter flags and set the according one to true. 
-    [SerializeField] NavigationOfficer navOfficer; 
-    [SerializeField] Cook cook;
-    [SerializeField] Engineer engineer;
-    [SerializeField] Doctor doctor;
-    [SerializeField] RichGuy guy;
-    [SerializeField] RichGirl girl;
     // chances the imposter does something, for easily adjustable difficulty
     public float killSelfChance = 0.4f;
     public float killChance = 0.5f;
@@ -54,7 +46,6 @@ public class GameManager : MonoBehaviour
 
     // Pause logic
     public bool paused = false;
-    [SerializeField] GameObject player;
 
     void Awake() 
     {
@@ -65,17 +56,22 @@ public class GameManager : MonoBehaviour
         }
 
         // Otherwise, set this first instance to be the static instance:
-        Instance = this; 
-        DontDestroyOnLoad(gameObject); 
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
 
-        StartGame(); 
+    void Start()
+    {
+        // Deferred to Start() so every object's Awake() (e.g. Player assigning its
+        // own CharacterController) has already run before we start touching them.
+        StartGame();
 
         /** Testing the start of a brand new day after Day 0: **/
         /*
-        currentImposter = characters[0]; 
-        ImposterKillsSomeone(); 
-        NightEnd(); 
-        */ 
+        currentImposter = characters[0];
+        ImposterKillsSomeone();
+        NightEnd();
+        */
     }
 
     void TransitionTo(GameState newState)
@@ -143,6 +139,7 @@ public class GameManager : MonoBehaviour
         if (currentDay == 0) choicesLeft = 10;
         else choicesLeft = 3;
 
+        Debug.Log("Day Start");
         TeleportPlayer(daySpawnPoint.transform.position);
 
         if (currentDay == 0) // If it is intro day (Day 0), simply open up to gameplay from black screen (no deaths on Day 0):
