@@ -535,7 +535,7 @@ Transform:
   m_GameObject: {fileID: 189023179}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.44, y: 0.98, z: 2.83}
+  m_LocalPosition: {x: 58.8, y: 0.98, z: -30.06}
   m_LocalScale: {x: 1, y: 1, z: 1.8065}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3457,7 +3457,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CutsceneUI
   panelUI: {fileID: 1628293329}
-  cutsceneImage: {fileID: 0}
+  cutsceneImage: {fileID: 140992723}
   fadeCanvasGroup: {fileID: 1776772169}
 --- !u!225 &1776772169
 CanvasGroup:

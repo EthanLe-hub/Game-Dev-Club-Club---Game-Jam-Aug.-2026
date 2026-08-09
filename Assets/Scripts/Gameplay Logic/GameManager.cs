@@ -227,14 +227,11 @@ public class GameManager : MonoBehaviour
         }
 
         ImposterKillsSomeone();
-        // TransitionTo(GameState.NightAccusation);
-        TransitionTo(GameState.NightEnd);
+        TransitionTo(GameState.NightAccusation);
     }
 
     void NightAccusation()
     {
-        // waits for MakeAccusation() to be called by the accusation UI.
-
         StartCoroutine(NightAccusationRoutine());
     }
 
