@@ -14,6 +14,8 @@ public class Character : MonoBehaviour
 
     public Sprite deathSprite; // Fill in via Unity Inspector with the cutscene image to show when this character dies.
 
+    [SerializeField] Transform[] possibleSpawnPoints; // Fill in via Unity Inspector with this character's own spots where they can be placed at the start of each day.
+
     // Unity Events for other scripts to subscribe to: 
     // Subclass scripts will subscribe to these events and add listeners to them in their own scripts:
     [HideInInspector] public UnityEvent OnThrowingOut = new UnityEvent(); 
@@ -31,6 +33,19 @@ public class Character : MonoBehaviour
     // Function called when player selects character to lock up in quarantine:
     public void LockUp()
     {
-        OnLockingUp?.Invoke(); // Trigger the event, which the subclass listens for. 
+        OnLockingUp?.Invoke(); // Trigger the event, which the subclass listens for.
+    }
+
+    // Moves this character to a random one of its own spawn spots:
+    public void PlaceAtRandomSpawn()
+    {
+        if (possibleSpawnPoints == null || possibleSpawnPoints.Length == 0)
+        {
+            Debug.LogWarning(name + " has no possibleSpawnPoints assigned.");
+            return;
+        }
+
+        Transform spot = possibleSpawnPoints[Random.Range(0, possibleSpawnPoints.Length)];
+        transform.SetPositionAndRotation(spot.position, spot.rotation);
     }
 }

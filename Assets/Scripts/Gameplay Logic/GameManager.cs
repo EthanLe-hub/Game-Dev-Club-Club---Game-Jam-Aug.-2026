@@ -15,13 +15,16 @@ public class GameManager : MonoBehaviour
     // chances the imposter does something, for easily adjustable difficulty
     public float killSelfChance = 0.4f;
     public float killChance = 0.5f;
-    public float imposterNightArrivalChance = 0.3f;
+    public float imposterNightArrivalChance = 2.0f;
     public int maxDays = 5;
+
+    // spawnpoints each day
+    public GameObject nightSpawnPoint;
+    public GameObject daySpawnPoint;
+    public Player player;
 
     // all 6 characters (excluding captain) who can potentially be imposters or die:
     [SerializeField] Character[] characters;
-    // spots on the map where alive characters get placed at the start of each day.
-    [SerializeField] Transform[] dayStartPositions;
 
     private int currentDay = 0;
     private Character currentImposter;
@@ -34,9 +37,11 @@ public class GameManager : MonoBehaviour
     // whether tonight's door visitor is the imposter, rolled at NightStart and resolved by OpenDoor().
     private bool doorVisitorIsImposter;
 
+    // states
+    private enum GameState { GameStart, GameEnd, DayStart, DayEnd, NightStart, NightDoor, NightAccusation, NightEnd }
     public enum AccusationType { LockUp, ThrowOverboard, None }
 
-    private enum GameState { GameStart, GameEnd, DayStart, DayEnd, NightStart, NightDoor, NightAccusation, NightEnd }
+
     private GameState currentState;
 
     void Awake() 
@@ -126,12 +131,14 @@ public class GameManager : MonoBehaviour
         if (currentDay == 0) choicesLeft = 10;
         else choicesLeft = 3;
 
+        TeleportPlayer(daySpawnPoint.transform.position);
+
         if (currentDay == 0) // If it is intro day (Day 0), simply open up to gameplay from black screen (no deaths on Day 0):
         {
             cutsceneUI.StartOfGame(); 
         }
 
-        else if (currentDay != 0) // If it is after the intro day (after Day 0), then show death cutscenes (no deaths on Day 0):
+        else // If it is after the intro day (after Day 0), then show death cutscenes (no deaths on Day 0):
         {
             if (characterJustKilled != null)
             {
@@ -158,6 +165,9 @@ public class GameManager : MonoBehaviour
 
     void NightStart()
     {
+        TeleportPlayer(nightSpawnPoint.transform.position);
+        Debug.Log("[GameManager] imposterNightArrivalChance = " + imposterNightArrivalChance);
+        
         doorVisitorIsImposter = Random.value < imposterNightArrivalChance;
         Debug.Log("[GameManager] Door visitor is imposter? " + doorVisitorIsImposter);
         TransitionTo(GameState.NightDoor);
@@ -187,7 +197,8 @@ public class GameManager : MonoBehaviour
         }
 
         ImposterKillsSomeone();
-        TransitionTo(GameState.NightAccusation);
+        // TransitionTo(GameState.NightAccusation);
+        TransitionTo(GameState.NightEnd);
     }
 
     void NightAccusation()
@@ -322,24 +333,12 @@ public class GameManager : MonoBehaviour
     // places alive characters in their positions throughout boat
     void PlaceAliveCharacters()
     {
-        int positionIndex = 0;
         foreach (Character character in characters)
         {
             if (character.isDead) continue;
-            if (character.isLockedUp)
-            {
-                continue;
-            }
+            if (character.isLockedUp) continue;
 
-            if (positionIndex >= dayStartPositions.Length)
-            {
-                Debug.LogWarning("Not enough dayStartPositions for all alive characters.");
-                break;
-            }
-
-            Transform spot = dayStartPositions[positionIndex];
-            character.transform.SetPositionAndRotation(spot.position, spot.rotation);
-            positionIndex++;
+            character.PlaceAtRandomSpawn();
         }
     }
 
@@ -352,6 +351,11 @@ public class GameManager : MonoBehaviour
 
         if (choicesLeft <= 0)
             TransitionTo(GameState.DayEnd);
+    }
+
+    public void EndDayEarly()
+    {
+        TransitionTo(GameState.DayEnd);
     }
 
     void LockUp(Character character)
@@ -368,5 +372,12 @@ public class GameManager : MonoBehaviour
     public void HelperCloseCutscene()
     {
         cutsceneUI.CloseCutscene(); 
+    }
+
+    void TeleportPlayer(Vector3 pos)
+    {
+        player.playerController.enabled = false;
+        player.transform.position = pos;
+        player.playerController.enabled = true;
     }
 }

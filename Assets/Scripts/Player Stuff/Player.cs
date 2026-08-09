@@ -26,7 +26,7 @@ public class Player : MonoBehaviour
     bool isTalking = false; // Flag used when talking to other characters. 
 
     Animator animator; // Likely being attached in the child of the GameObject holding this script. 
-    CharacterController playerController; // The component that moves the actual player entity. 
+    public CharacterController playerController; // The component that moves the actual player entity. 
     Transform playerTransform; // Position and rotation of the player. 
 
     void Awake()
@@ -55,8 +55,13 @@ public class Player : MonoBehaviour
         GameObject camObj = GameObject.FindGameObjectWithTag(cineCamTag); 
         if (camObj != null)
         {
-            camInputController = camObj.GetComponent<CinemachineInputAxisController>(); 
-            cinemachineCam = camObj.GetComponent<CinemachineCamera>(); 
+            camInputController = camObj.GetComponent<CinemachineInputAxisController>();
+            cinemachineCam = camObj.GetComponent<CinemachineCamera>();
+
+            if (cinemachineCam != null)
+            {
+                cinemachineCam.Target.TrackingTarget = playerTransform;
+            }
         }
     }
 
