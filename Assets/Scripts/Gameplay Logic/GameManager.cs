@@ -1,6 +1,8 @@
 // Ethan Le (8/6/2026):
+using System.Collections; // For IEnumerator. 
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement; 
 
 /** 
  * Global static script for managing game logic:
@@ -33,6 +35,10 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] CutsceneUI cutsceneUI; // Script to show death scene of new character each day.
     public bool isCutsceneActive = false; // True when a death scene is showing at the start of each day. 
+
+    AccusationUI accusationUI; // Script to make accusation for the night. 
+    string accusationUITag = "Accusation UI"; 
+    int accusationScene = 1; 
 
     // whether tonight's door visitor is the imposter, rolled at NightStart and resolved by OpenDoor().
     private bool doorVisitorIsImposter;
@@ -72,6 +78,21 @@ public class GameManager : MonoBehaviour
         ImposterKillsSomeone();
         NightEnd();
         */
+        //StartGame(); 
+
+        /** Testing the start of a brand new day after Day 0: **/
+        /*
+        currentImposter = characters[0]; 
+        ImposterKillsSomeone(); 
+        NightEnd(); 
+        */
+
+        /** Testing the night accusation panel: **/ 
+        
+        // StartGame();
+        // currentImposter = characters[0];  
+        // TransitionTo(GameState.NightAccusation); 
+        
     }
 
     void TransitionTo(GameState newState)
@@ -213,6 +234,32 @@ public class GameManager : MonoBehaviour
     void NightAccusation()
     {
         // waits for MakeAccusation() to be called by the accusation UI.
+
+        StartCoroutine(NightAccusationRoutine());
+    }
+
+    IEnumerator NightAccusationRoutine()
+    {
+        // Uses LoadSceneMode.Additive to keep the main scene alive while the accusation Scene is on (needed so the AccusationUI.cs can retrieve the same characters' scripts in memory):
+        AsyncOperation asyncLoading = SceneManager.LoadSceneAsync(accusationScene, LoadSceneMode.Additive); 
+
+        while (!asyncLoading.isDone)
+        {
+            yield return null; 
+        }
+
+        GameObject accusationUIObj = GameObject.FindGameObjectWithTag(accusationUITag); 
+
+        if (accusationUIObj != null)
+        {
+            accusationUI = accusationUIObj.GetComponent<AccusationUI>(); 
+        }
+
+        if (accusationUI != null)
+        {
+            Debug.Log("ACCUSATION PANEL OPENING"); 
+            accusationUI.OpenAccusationPanel(); // Begin accusation choice. 
+        }
     }
 
     // called when the player locks someone up, throws someone overboard, or does nothing.
@@ -233,6 +280,9 @@ public class GameManager : MonoBehaviour
             case AccusationType.None:
                 break;
         }
+
+        // Unload the accusation Scene before transitioning:
+        SceneManager.UnloadSceneAsync(accusationScene); 
 
         TransitionTo(GameState.NightEnd);
     }
