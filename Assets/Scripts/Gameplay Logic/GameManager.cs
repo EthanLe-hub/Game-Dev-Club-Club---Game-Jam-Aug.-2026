@@ -64,10 +64,14 @@ public class GameManager : MonoBehaviour
         currentImposter = characters[0]; 
         ImposterKillsSomeone(); 
         NightEnd(); 
-        */ 
+        */
+
+        /** Testing the night accusation panel: **/ 
+        
         StartGame();
         currentImposter = characters[0];  
-        NightAccusation(); 
+        TransitionTo(GameState.NightAccusation); 
+        
     }
 
     void TransitionTo(GameState newState)
