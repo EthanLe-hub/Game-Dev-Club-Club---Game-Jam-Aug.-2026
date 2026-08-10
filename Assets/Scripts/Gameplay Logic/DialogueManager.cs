@@ -201,7 +201,7 @@ public class DialogueManager : MonoBehaviour
     {
         for (int i = options.transform.childCount - 1; i >= 0; i--)
         {
-            Destroy(options.transform.GetChild(i).gameObject);
+            DestroyImmediate(options.transform.GetChild(i).gameObject, true);
         }
     }
 }
