@@ -53,7 +53,7 @@ public class GameManager : MonoBehaviour
     string gameOverScene = "GameOver"; // Scene loaded (replacing Main) when the game ends.
     public bool isAccusing = false; // True when making an accusation for the night.
 
-    //[SerializeField] NightSequence nightSequence; // Night door UI: knock narration, open/keep-closed choice, final hint.
+    [SerializeField] NightSequence nightSequence; // Night door UI: knock narration, open/keep-closed choice, final hint.
     public bool isAtDoor = false; // True while the open/keep-closed choice is on screen (frees the cursor in Player.cs).
     bool doorResolved; // True once tonight's door choice has been made (prevents answering the door twice).
 
