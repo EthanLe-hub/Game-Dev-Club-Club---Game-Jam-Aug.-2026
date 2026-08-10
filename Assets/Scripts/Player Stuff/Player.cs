@@ -157,6 +157,13 @@ public class Player : MonoBehaviour
 
         playerController.Move(officialMoveDirection * Time.deltaTime);
 
+        // Footstep sounds while actually walking on the ground (SoundManager rate-limits the steps).
+        // smoothedMoveInput is checked (not raw input) so steps stop as movement eases out:
+        if (playerController.isGrounded && smoothedMoveInput.magnitude > 0.1f && SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayFootstep();
+        }
+
 /*
         // Mouse look (requires right-mouse-button hold to look around):
         if (camInputController != null)
