@@ -89,11 +89,19 @@ public class Player : MonoBehaviour
         if (GameManager.Instance.isAccusing && controls.asset.enabled)
         {
             SetCursorState(false); // Allow player to use cursor to make accusation. 
+            if (camInputController != null)
+            {
+                camInputController.enabled = false; // Prevent camera rotation with cursor during accusation. 
+            }
             OnDisable(); // Turn off player movement while accusing. 
         }
         else if (!GameManager.Instance.isAccusing && !controls.asset.enabled)
         {
             SetCursorState(true); // Lock and hide the cursor when accusation is over. 
+            if (camInputController != null)
+            {
+                camInputController.enabled = true; // Re-enable camera rotation with cursor after accusation. 
+            }
             OnEnable(); // Turn on player movement again if no longer accusing for the night. 
         }
 
