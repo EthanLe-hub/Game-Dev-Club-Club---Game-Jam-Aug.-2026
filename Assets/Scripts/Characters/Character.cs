@@ -9,11 +9,17 @@ public class Character : MonoBehaviour
 {
     public bool isImposter = false;
 
+    public string displayName; // Fill in via Unity Inspector with the name shown in dialogue (e.g. "Leah") - falls back to the GameObject name if left empty.
+    public string DisplayName => string.IsNullOrEmpty(displayName) ? name : displayName;
+
     //[SerializeField] string[] regularTexts; // Fill in via Unity Inspector with character's appropriate dialogue (when not imposter). 
     //[SerializeField] string[] imposterTexts; // Fill in via Unity Inspector with character's dialogue as imposter. 
     public DialogueParent dialogue;
 
     public Sprite deathSprite; // Fill in via Unity Inspector with the cutscene image to show when this character dies.
+
+    public Texture2D inspectSpriteImposter;
+    public Texture2D inspectSpriteInnocent;
 
     [SerializeField] Transform[] possibleSpawnPoints; // Fill in via Unity Inspector with this character's own spots where they can be placed at the start of each day.
 

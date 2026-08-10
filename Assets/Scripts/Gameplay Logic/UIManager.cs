@@ -21,6 +21,8 @@ public class UIManager : MonoBehaviour
         // Otherwise, set this first instance to be the static instance:
         Instance = this;
         DontDestroyOnLoad(gameObject);
+
+        dialoguePanel.HideInspectUI();
     }
 
     public void startDialogue(Character c)

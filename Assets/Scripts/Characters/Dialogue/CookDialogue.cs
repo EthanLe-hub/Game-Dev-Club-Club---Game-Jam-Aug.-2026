@@ -6,6 +6,34 @@ public class CookDialogue : DialogueParent
 {
     private void OnEnable()
     {
+
+        talkLinesImposter = new[]
+        {
+            "Hey Captain! You hungry? You look... tired.",
+            "Trust me, tonight's dinner will be to die for! Great great great!"
+        };
+
+        // Innocent Cook's clue templates ({name} = suspect, {deadCharacter} = last night's victim):
+        talkClueTemplates = new[]
+        {
+            "I saw {name} sneakin' around the galley last night. Didn't look like a midnight snack run to me.",
+            "{name} was actin' mighty strange at dinner, Captain. Barely touched my food.",
+            "I heard {name} talkin' with {deadCharacter} right before lights out. Ain't that somethin'?",
+            "{name} asked me weird questions about tonight's menu. Real weird."
+        };
+
+        talkLinesFallback = new[]
+        {
+            "Somethin' still feels off on this boat, Captain.",
+            "I can't put my finger on it. Keep your eyes open, yeah?"
+        };
+
+        // inspect
+        inspectLineImposter = "His smile is a little too wide, and it never reaches his eyes.";
+        inspectLineInnocent = "He hums to himself while stirring a pot, same as always.";
+
+        // ===== Shared / legacy content below =====
+
         day0 = new[]
         {
             "Hey, Captain!",

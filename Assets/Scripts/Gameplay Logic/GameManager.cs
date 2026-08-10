@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     public float killSelfChance = 0.4f;
     public float killChance = 0.5f;
     public float imposterNightArrivalChance = 2.0f;
+    public float clueAccuracy = 0.7f; // chance that a clue line names the real imposter (otherwise a random other living character)
     public int maxDays = 5;
 
     // spawnpoints each day
@@ -30,6 +31,15 @@ public class GameManager : MonoBehaviour
 
     public int currentDay = 0;
     private Character currentImposter;
+
+    // Class name of the character the imposter is currently possessing (e.g. "Engineer"), or null if none.
+    // Dialogue clue dictionaries are keyed by this name.
+    public string CurrentImposterName => currentImposter != null ? currentImposter.GetType().Name : null;
+
+    // False once the imposter can no longer act (dead or locked up) - dialogue should use fallback lines then.
+    public bool ImposterIsActive => currentImposter != null && !currentImposter.isDead && !currentImposter.isLockedUp;
+
+    
     public Character characterJustKilled; // Character who was just killed (needed to display the appropriate death cutscene image). 
     private int choicesLeft = 3;
 
@@ -161,11 +171,10 @@ public class GameManager : MonoBehaviour
         else choicesLeft = 3;
 
         Debug.Log("Day Start");
-        TeleportPlayer(daySpawnPoint.transform.position);
 
         if (currentDay == 0) // If it is intro day (Day 0), simply open up to gameplay from black screen (no deaths on Day 0):
         {
-            cutsceneUI.StartOfGame(); 
+            cutsceneUI.StartOfGame(() => TeleportPlayer(daySpawnPoint.transform.position));
         }
 
         else // If it is after the intro day (after Day 0), then show death cutscenes (no deaths on Day 0):
@@ -173,12 +182,12 @@ public class GameManager : MonoBehaviour
             if (characterJustKilled != null)
             {
                 Debug.Log(characterJustKilled.name + " death scene is showing");
-                cutsceneUI.ShowDeathScene(characterJustKilled.deathSprite); // Send cutscene image to display in CutsceneUI.cs script.
+                cutsceneUI.ShowDeathScene(characterJustKilled.deathSprite, () => TeleportPlayer(daySpawnPoint.transform.position));
             }
             else
             {
                 Debug.Log("No deaths tonight!");
-                cutsceneUI.CloseCutscene(); // No death cutscene to display.
+                cutsceneUI.CloseCutscene(() => TeleportPlayer(daySpawnPoint.transform.position));
             }
         }
 
@@ -195,11 +204,13 @@ public class GameManager : MonoBehaviour
 
     void NightStart()
     {
-        TeleportPlayer(nightSpawnPoint.transform.position);
         Debug.Log("[GameManager] imposterNightArrivalChance = " + imposterNightArrivalChance);
-        
+
         doorVisitorIsImposter = Random.value < imposterNightArrivalChance;
         Debug.Log("[GameManager] Door visitor is imposter? " + doorVisitorIsImposter);
+
+        cutsceneUI.GoToNight(() => TeleportPlayer(nightSpawnPoint.transform.position));
+
         TransitionTo(GameState.NightDoor);
     }
 
@@ -374,6 +385,24 @@ public class GameManager : MonoBehaviour
         return result;
     }
 
+    // Picks who a clue line should name (fills the {name} placeholder in talkClueTemplates):
+    // clueAccuracy chance of the real imposter; otherwise a random other living character.
+    // The speaker is excluded so characters never implicate themselves.
+    public Character GetClueSuspect(Character speaker)
+    {
+        if (ImposterIsActive && Random.value < clueAccuracy) return currentImposter;
+
+        List<Character> candidates = new List<Character>();
+        foreach (Character character in characters)
+        {
+            if (character.isDead || character == currentImposter || character == speaker) continue;
+            candidates.Add(character);
+        }
+
+        if (candidates.Count == 0) return currentImposter; // Nobody else left to falsely accuse.
+        return candidates[Random.Range(0, candidates.Count)];
+    }
+
     // setting characters to be imposter
     void SetImposter(int imposter)
     {
@@ -427,7 +456,7 @@ public class GameManager : MonoBehaviour
     // Helper function to close death cutscene once player presses Spacebar key (called in Player.cs):
     public void HelperCloseCutscene()
     {
-        cutsceneUI.CloseCutscene(); 
+        cutsceneUI.CloseCutscene(null);
     }
 
 
