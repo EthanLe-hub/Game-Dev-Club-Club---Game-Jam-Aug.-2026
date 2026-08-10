@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46028713102ba8249a86dd438569ce41, type: 3}
+  m_Name: RichGuyDialogue
+  m_EditorClassIdentifier: Assembly-CSharp::RichGuyDialogue
+  talkLinesImposter:
+  - Get out of my face, Captain.
+  - Do I really look like a deep-sea parasite to you?
+  talkClueTemplates:
+  - If you must know, {name} spent too long in the bathroom.
+  - I know nothing about {name} dancing in our quarters.
+  - '{name} really thought arguing with {deadCharacter} was a good idea. Who cares
+    that {deadCharacter} is dead, though.'
+  - '{name} kept begging me for money. I said no.'
+  talkLinesFallback:
+  - This was the worst trip I ever had, Captain.
+  - I could have done something more productive in that time.
+  inspectLineImposter: Rich Guy is usually a jerk, but now he is a lot more of a
+    jerk than usual. Stress or suspicious?
+  inspectLineInnocent: Rich Guy is a jerk, he usually does not want to respect anyone,
+    not even his wife.
+  day0:
+  - Hold on- What?
+  - Is it something important, Captain?
+  - No? Then stop interrupting my call.

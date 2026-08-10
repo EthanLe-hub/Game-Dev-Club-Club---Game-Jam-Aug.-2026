@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e2dc6470d8f077489cdf04bf41d6583, type: 3}
+  m_Name: RichGirlDialogue
+  m_EditorClassIdentifier: Assembly-CSharp::RichGirlDialogue
+  talkLinesImposter:
+  - Captain... something weird is going on.
+  - I DEFINITELY know it has nothing to do with me though.
+  talkClueTemplates:
+  - My husband and I saw {name} spending too long in the bathroom. I wonder why.
+  - I kind of enjoyed the dancing that {name} was doing in our quarters.
+  - '{name} was arguing a lot with {deadCharacter}. Reminds me of my husband and
+    I sometimes.'
+  - '{name} kept begging my husband for money. He said no.'
+  talkLinesFallback:
+  - I sure hope we get out of this submarine in one piece.
+  - It'd be tragic if we didn't.
+  inspectLineImposter: Rich Girl has a little more heart than her husband... right?
+  inspectLineInnocent: Compared to her husband, the Rich Girl seems to be a little
+    more friendly towards the other crewmates and the Captain.
+  day0:
+  - What is it?
+  - Oh, nevermind. Just ask my husband.
+  - Oh- careful not to interrupt his phone calls, though.
