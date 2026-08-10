@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     public float killChance = 0.5f;
     public float imposterNightArrivalChance = 2.0f;
     public float clueAccuracy = 0.7f; // chance that a clue line names the real imposter (otherwise a random other living character)
+    public float finalHintAccuracy = 0.9f; // accuracy of the hint given by an innocent night visitor (reward for risking the door)
     public int maxDays = 5;
 
     // spawnpoints each day
@@ -46,10 +47,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] CutsceneUI cutsceneUI; // Script to show death scene of new character each day.
     public bool isCutsceneActive = false; // True when a death scene is showing at the start of each day. 
 
-    AccusationUI accusationUI; // Script to make accusation for the night. 
-    string accusationUITag = "Accusation UI"; 
-    int accusationScene = 1; 
-    public bool isAccusing = false; // True when making an accusation for the night. 
+    AccusationUI accusationUI; // Script to make accusation for the night.
+    string accusationUITag = "Accusation UI";
+    int accusationScene = 1;
+    public bool isAccusing = false; // True when making an accusation for the night.
+
+    [SerializeField] NightSequence nightSequence; // Night door UI: knock narration, open/keep-closed choice, final hint.
+    public bool isAtDoor = false; // True while the open/keep-closed choice is on screen (frees the cursor in Player.cs).
+    bool doorResolved; // True once tonight's door choice has been made (prevents answering the door twice).
 
     // whether tonight's door visitor is the imposter, rolled at NightStart and resolved by OpenDoor().
     private bool doorVisitorIsImposter;
@@ -208,9 +213,13 @@ public class GameManager : MonoBehaviour
         Debug.Log("[GameManager] imposterNightArrivalChance = " + imposterNightArrivalChance);
 
         doorVisitorIsImposter = Random.value < imposterNightArrivalChance;
+        doorResolved = false; // New night, new door choice.
         Debug.Log("[GameManager] Door visitor is imposter? " + doorVisitorIsImposter);
 
-        cutsceneUI.GoToNight(() => TeleportPlayer(nightSpawnPoint.transform.position));
+        // Fade to black, teleport to the bedroom, fade back in - then the visitor knocks:
+        cutsceneUI.GoToNight(
+            () => TeleportPlayer(nightSpawnPoint.transform.position),
+            () => nightSequence.BeginKnock(doorVisitorIsImposter));
 
         TransitionTo(GameState.NightDoor);
     }
@@ -220,24 +229,53 @@ public class GameManager : MonoBehaviour
         // waits for OpenDoor() to be called by the door interaction.
     }
 
+    // called by NightDoorInteractable when the player clicks the door - opens the open/keep-closed choice.
+    public void DoorClicked()
+    {
+        if (currentState != GameState.NightDoor || doorResolved) return;
+
+        isAtDoor = true;
+        nightSequence.ShowDoorChoice();
+    }
+
     // called when the player chooses to open (or not open) the door at night.
     public void OpenDoor(bool open)
     {
-        if (currentState != GameState.NightDoor) return;
+        if (currentState != GameState.NightDoor || doorResolved) return;
 
+        doorResolved = true;
+        isAtDoor = false;
         Debug.Log("[GameManager] Player opened door? " + open);
 
-        if (open)
+        if (!open)
         {
-            if (doorVisitorIsImposter)
-            {
-                KillPlayer();
-                return;
-            }
-
-            GiveClue();
+            cutsceneUI.GoToNight(FinishNight);
+            return;
         }
 
+        if (doorVisitorIsImposter)
+        {
+            cutsceneUI.ShowPlayerDeath("You open the door...\n\nIt was the imposter.\n\nYou died.",
+                () => TransitionTo(GameState.GameEnd));
+            return;
+        }
+
+        // Opened the door to an innocent visitor: they give one final, more accurate hint.
+        // Then back to bed and on to judgement:
+        Character hintGiver = GetRandomAliveInnocent();
+        if (hintGiver != null)
+        {
+            string hint = BuildClueLine(hintGiver, finalHintAccuracy);
+            nightSequence.ShowFinalHint(hintGiver.DisplayName, hint, () => cutsceneUI.GoToNight(FinishNight));
+            return;
+        }
+
+        cutsceneUI.GoToNight(FinishNight);
+    }
+
+    // Shared tail of the night: the imposter acts, then the accusation begins (runs while the screen is black).
+    void FinishNight()
+    {
         ImposterKillsSomeone();
         TransitionTo(GameState.NightAccusation);
     }
@@ -315,17 +353,6 @@ public class GameManager : MonoBehaviour
     //                              ========
 
 
-    void KillPlayer()
-    {
-        Debug.Log("The imposter got you.");
-        TransitionTo(GameState.GameEnd);
-    }
-
-    void GiveClue()
-    {
-        Debug.Log("A crewmate gives you a clue about the imposter.");
-    }
-
     // imposter either kills its own host (and possesses a different alive character), kills someone else, or does not kill.
     void ImposterKillsSomeone()
     {
@@ -390,11 +417,12 @@ public class GameManager : MonoBehaviour
     }
 
     // Picks who a clue line should name (fills the {name} placeholder in talkClueTemplates):
-    // clueAccuracy chance of the real imposter; otherwise a random other living character.
+    // 'accuracy' chance of the real imposter; otherwise a random other living character.
+    // (Daytime clues pass clueAccuracy, the night-door final hint passes finalHintAccuracy.)
     // The speaker is excluded so characters never implicate themselves.
-    public Character GetClueSuspect(Character speaker)
+    public Character GetClueSuspect(Character speaker, float accuracy)
     {
-        if (ImposterIsActive && Random.value < clueAccuracy) return currentImposter;
+        if (ImposterIsActive && Random.value < accuracy) return currentImposter;
 
         List<Character> candidates = new List<Character>();
         foreach (Character character in characters)
@@ -404,6 +432,47 @@ public class GameManager : MonoBehaviour
         }
 
         if (candidates.Count == 0) return currentImposter; // Nobody else left to falsely accuse.
+        return candidates[Random.Range(0, candidates.Count)];
+    }
+
+    // Builds a filled-in clue line spoken by 'speaker', naming a suspect chosen with the given accuracy.
+    public string BuildClueLine(Character speaker, float accuracy)
+    {
+        Character suspect = GetClueSuspect(speaker, accuracy);
+
+        // Templates mentioning {deadCharacter} only make sense if someone died last night:
+        List<string> usable = new List<string>();
+        string[] templates = speaker.dialogue != null ? speaker.dialogue.talkClueTemplates : null;
+        if (templates != null)
+        {
+            foreach (string template in templates)
+            {
+                if (characterJustKilled == null && template.Contains("{deadCharacter}")) continue;
+                usable.Add(template);
+            }
+        }
+
+        // No usable templates (e.g. dialogue asset not written yet) - fall back to a generic clue:
+        if (usable.Count == 0) return "I saw " + suspect.DisplayName + " acting strange earlier... watch them, Captain.";
+
+        string line = usable[Random.Range(0, usable.Count)];
+        line = line.Replace("{name}", suspect.DisplayName);
+        if (characterJustKilled != null) line = line.Replace("{deadCharacter}", characterJustKilled.DisplayName);
+
+        return line;
+    }
+
+    // A random living, free character who is not the imposter (the night-door hint giver). Null if none left.
+    Character GetRandomAliveInnocent()
+    {
+        List<Character> candidates = new List<Character>();
+        foreach (Character character in characters)
+        {
+            if (character.isDead || character.isLockedUp || character == currentImposter) continue;
+            candidates.Add(character);
+        }
+
+        if (candidates.Count == 0) return null;
         return candidates[Random.Range(0, candidates.Count)];
     }
 

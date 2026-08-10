@@ -53,6 +53,15 @@ public class DialogueManager : MonoBehaviour
         speaking = c;
         dialogueFile = speaking.dialogue;
 
+        // No dialogue asset assigned on this character yet - close cleanly instead of crashing
+        // (an exception here would leave the game paused forever, since UIManager already paused):
+        if (dialogueFile == null)
+        {
+            Debug.LogWarning(speaking.name + " has no dialogue asset assigned in the Inspector - skipping dialogue.");
+            endDialogue();
+            return;
+        }
+
         // intro line for day 0
         if (GameManager.Instance.currentDay == 0)
         {
@@ -101,7 +110,7 @@ public class DialogueManager : MonoBehaviour
 
         // Then the character's own dialogue: imposter act, a clue, or a fallback if no clue applies:
         if (speaking.isImposter) lines.AddRange(dialogueFile.talkLinesImposter);
-        else if (GameManager.Instance.ImposterIsActive) lines.Add(BuildClueLine());
+        else if (GameManager.Instance.ImposterIsActive) lines.Add(GameManager.Instance.BuildClueLine(speaking, GameManager.Instance.clueAccuracy));
         else lines.AddRange(dialogueFile.talkLinesFallback);
 
         PlayLines(lines.ToArray());
@@ -136,34 +145,18 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    // fills a random clue template: {name} = suspect, {deadCharacter} = last night's victim.
-    private string BuildClueLine()
-    {
-        Character dead = GameManager.Instance.characterJustKilled;
-
-        // only adding if someone died.
-        List<string> usable = new List<string>();
-        foreach (string template in dialogueFile.talkClueTemplates)
-        {
-            if (dead == null && template.Contains("{deadCharacter}")) continue;
-            usable.Add(template);
-        }
-
-        if (usable.Count == 0) return dialogueFile.talkLinesFallback[0];
-
-        // pick a random suspect.
-        Character suspect = GameManager.Instance.GetClueSuspect(speaking);
-        string line = usable[Random.Range(0, usable.Count)];
-        line = line.Replace("{name}", suspect.DisplayName);
-        if (dead != null) line = line.Replace("{deadCharacter}", dead.DisplayName);
-
-        return line;
-    }
-
     // playing lines
 
     private void PlayLines(string[] lines)
     {
+        // Guard against dialogue assets with missing/empty sections:
+        if (lines == null || lines.Length == 0)
+        {
+            Debug.LogWarning(speaking.name + "'s dialogue asset is missing lines for this situation - skipping.");
+            endDialogue();
+            return;
+        }
+
         state = State.Lines;
 
         ClearOptionButtons();

@@ -2,7 +2,9 @@
 using System; // For Action.
 using System.Collections; // For IEnumerator.
 using UnityEngine;
+using UnityEngine.InputSystem; // For Keyboard (player-death screen dismissal).
 using UnityEngine.UI;
+using TMPro; // For the player-death message text.
 
 /** 
  * Script to handle death scene that plays at the start of each new day.
@@ -10,9 +12,10 @@ using UnityEngine.UI;
 public class CutsceneUI : MonoBehaviour
 {
     // Assign these in Unity Inspector: 
-    [SerializeField] GameObject panelUI; 
-    [SerializeField] Image cutsceneImage; 
-    [SerializeField] CanvasGroup fadeCanvasGroup; 
+    [SerializeField] GameObject panelUI;
+    [SerializeField] Image cutsceneImage;
+    [SerializeField] CanvasGroup fadeCanvasGroup;
+    [SerializeField] TextMeshProUGUI deathText; // "You died" message shown over the black screen (place it above the Black Screen in the canvas hierarchy).
 
     float fadeDuration = 1f; // 1 second for the fade. 
     float inBetweenWait = 1f;
@@ -122,14 +125,15 @@ public class CutsceneUI : MonoBehaviour
         isTransitioning = false;
     }
 
-    // Called at the start of NightStart() (fades to black, runs onBlackScreen while hidden, then fades back in):
-    public void GoToNight(Action onBlackScreen)
+    // Called at the start of NightStart() (fades to black, runs onBlackScreen while hidden, then fades back in).
+    // onComplete fires after the fade back in finishes (e.g. to start the door knock).
+    public void GoToNight(Action onBlackScreen, Action onComplete = null)
     {
         if (isTransitioning) return;
-        StartCoroutine(StartTransitionToNight(onBlackScreen));
+        StartCoroutine(StartTransitionToNight(onBlackScreen, onComplete));
     }
 
-    IEnumerator StartTransitionToNight(Action onBlackScreen)
+    IEnumerator StartTransitionToNight(Action onBlackScreen, Action onComplete)
     {
         isTransitioning = true;
         fadeCanvasGroup.blocksRaycasts = true;
@@ -147,6 +151,47 @@ public class CutsceneUI : MonoBehaviour
         panelUI.SetActive(false);
         fadeCanvasGroup.blocksRaycasts = false;
         isTransitioning = false;
+
+        onComplete?.Invoke();
+    }
+
+    // Shows the "you died" screen when the player opens the door to the imposter:
+    // fades to black, shows the message, then waits for Space before handing control back (via onDismissed).
+    public void ShowPlayerDeath(string message, Action onDismissed)
+    {
+        if (isTransitioning) return;
+        StartCoroutine(PlayerDeathRoutine(message, onDismissed));
+    }
+
+    IEnumerator PlayerDeathRoutine(string message, Action onDismissed)
+    {
+        isTransitioning = true;
+        GameManager.Instance.isCutsceneActive = true; // Freeze player movement.
+        fadeCanvasGroup.blocksRaycasts = true;
+
+        cutsceneImage.enabled = false; // Pure black screen with text only.
+        panelUI.SetActive(true);
+
+        if (deathText != null)
+        {
+            deathText.text = message;
+            deathText.gameObject.SetActive(true); // Fades in together with the black screen.
+        }
+
+        yield return StartCoroutine(Fading(1));
+
+        // Wait for Space. isTransitioning stays true the whole time, which also blocks
+        // Player.cs's cutscene-dismiss path (HelperCloseCutscene -> CloseCutscene) from
+        // starting a new-day transition on the same key press.
+        yield return null; // Do not count a press from this same frame.
+        while (!Keyboard.current.spaceKey.wasPressedThisFrame)
+        {
+            yield return null;
+        }
+
+        // The game is over - deliberately leave the screen black (and isTransitioning true,
+        // so no other transition can play over the game-over state):
+        onDismissed?.Invoke();
     }
 
     // Function that fades the screen to endingAlpha, starting from whatever alpha is currently showing
