@@ -20,6 +20,7 @@ public class Player : MonoBehaviour
     Vector3 camRight; // Which way is right of the current camera angle. 
 
     float moveSpeed = 6f; // Speed of the player.
+    float rotationSpeed = 2f; // Lower values slow down rotation. 
     float gravity = 10f;  
     Vector3 desiredMoveDirection; // Movement calculated in relation to where the camera is facing. 
     Vector3 officialMoveDirection; // Final calculated movement direction with speed incorporated. 
@@ -48,20 +49,32 @@ public class Player : MonoBehaviour
     void Start()
     {
         playerCamera = Camera.main; // Get the main camera. 
-
+/*
         Cursor.lockState = CursorLockMode.None; // Use cursor to move the camera angle. 
         Cursor.visible = true; // Can see your cursor. 
-
+*/
+        SetCursorState(true); 
+        
         GameObject camObj = GameObject.FindGameObjectWithTag(cineCamTag); 
         if (camObj != null)
         {
             camInputController = camObj.GetComponent<CinemachineInputAxisController>(); 
             cinemachineCam = camObj.GetComponent<CinemachineCamera>(); 
+            if (camInputController != null)
+            {
+                camInputController.enabled = true; 
+            }
         }
     }
 
     void Update()
     {
+        // Keep cursor locked if user clicks back into the window: 
+        if (Cursor.lockState != CursorLockMode.Locked && !GameManager.Instance.isCutsceneActive)
+        {
+            SetCursorState(true); 
+        }
+
         // Disable movement during cutscene, re-enable movement when cutscene is over:
         if (GameManager.Instance.isCutsceneActive && controls.asset.enabled)
         {
@@ -80,16 +93,20 @@ public class Player : MonoBehaviour
 
         // (1) Capture camera angles:
         camForward = playerCamera.transform.forward; 
-        camRight = playerCamera.transform.right; 
 
         // (2) Ensure player stays on the ground:
         camForward.y = 0; 
-        camRight.y = 0; 
         camForward.Normalize(); 
-        camRight.Normalize(); 
+
+        // (3) Rotate player transform immediately to face camera's horizontal angle: 
+        if (camForward != Vector3.zero)
+        {
+            playerTransform.forward = camForward; 
+        }
 
         // Steps 3-6 for player movement are in FixedUpdate(). 
 
+/*
         // Mouse look (requires right-mouse-button hold to look around):
         if (camInputController != null)
         {
@@ -110,25 +127,28 @@ public class Player : MonoBehaviour
                 camInputController.enabled = false; // Disable cam controller so camera angle does not keep rotating. 
             }
         }
+*/
     }
 
     void FixedUpdate()
     {
-        // (3) Calculate movement direction based on captured camera angles:
+        // (4) Calculate movement direction based on captured camera angles:
         // Move forward/backward and stay grounded (don't start escalating upwards), and move left/right: 
-        desiredMoveDirection = (camForward * moveInput.y + camRight * moveInput.x); 
+        desiredMoveDirection = (playerTransform.forward * moveInput.y) + (playerTransform.right * moveInput.x); 
 
+/*
         // Slowly rotate the player to match the camera angle:
         if (desiredMoveDirection != Vector3.zero)
         {
             // Shift the player's transform values slowly in the desired direction: 
             playerTransform.forward = Vector3.Slerp(playerTransform.forward, desiredMoveDirection, Time.deltaTime * 15f); 
         }
+*/
 
-        // (4) Grab y-axis movement direction (needed in case the player is not grounded):
+        // (5) Grab y-axis movement direction (needed in case the player is not grounded):
         float movementY = officialMoveDirection.y; 
 
-        // (5) Finally, create the official movement direction vector (with speed included):
+        // (6) Finally, create the official movement direction vector (with speed included):
         officialMoveDirection = desiredMoveDirection * moveSpeed; 
 
         // Check to ensure player is grounded (check its CharacterController's value "isGrounded"):
@@ -141,7 +161,13 @@ public class Player : MonoBehaviour
             officialMoveDirection.y = movementY - gravity * Time.deltaTime; 
         }
 
-        // (6) Now, actually move the player over time:
+        // (7) Now, actually move the player over time:
         playerController.Move(officialMoveDirection * Time.deltaTime); 
+    }
+
+    private void SetCursorState(bool isLocked)
+    {
+        Cursor.lockState = isLocked ? CursorLockMode.Locked : CursorLockMode.None; // First-person control locks cursor. 
+        Cursor.visible = !isLocked; // Hide cursor in first-person. 
     }
 }
