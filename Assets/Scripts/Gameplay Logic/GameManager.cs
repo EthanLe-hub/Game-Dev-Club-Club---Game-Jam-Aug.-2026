@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
     int accusationScene = 1;
     public bool isAccusing = false; // True when making an accusation for the night.
 
-    [SerializeField] NightSequence nightSequence; // Night door UI: knock narration, open/keep-closed choice, final hint.
+    //[SerializeField] NightSequence nightSequence; // Night door UI: knock narration, open/keep-closed choice, final hint.
     public bool isAtDoor = false; // True while the open/keep-closed choice is on screen (frees the cursor in Player.cs).
     bool doorResolved; // True once tonight's door choice has been made (prevents answering the door twice).
 
@@ -217,10 +217,10 @@ public class GameManager : MonoBehaviour
         Debug.Log("[GameManager] Door visitor is imposter? " + doorVisitorIsImposter);
 
         // Fade to black, teleport to the bedroom, fade back in - then the visitor knocks:
-        cutsceneUI.GoToNight(
+        /*cutsceneUI.GoToNight(
             () => TeleportPlayer(nightSpawnPoint.transform.position),
             () => nightSequence.BeginKnock(doorVisitorIsImposter));
-
+*/
         TransitionTo(GameState.NightDoor);
     }
 
@@ -235,7 +235,7 @@ public class GameManager : MonoBehaviour
         if (currentState != GameState.NightDoor || doorResolved) return;
 
         isAtDoor = true;
-        nightSequence.ShowDoorChoice();
+        //nightSequence.ShowDoorChoice();
     }
 
     // called when the player chooses to open (or not open) the door at night.
@@ -266,7 +266,7 @@ public class GameManager : MonoBehaviour
         if (hintGiver != null)
         {
             string hint = BuildClueLine(hintGiver, finalHintAccuracy);
-            nightSequence.ShowFinalHint(hintGiver.DisplayName, hint, () => cutsceneUI.GoToNight(FinishNight));
+            //nightSequence.ShowFinalHint(hintGiver.DisplayName, hint, () => cutsceneUI.GoToNight(FinishNight));
             return;
         }
 

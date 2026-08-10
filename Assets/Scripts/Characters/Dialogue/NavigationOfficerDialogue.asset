@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60930dc1fbf033740b86d76408c4ae76, type: 3}
+  m_Name: NavigationOfficerDialogue
+  m_EditorClassIdentifier: Assembly-CSharp::NavigationOfficerDialogue
+  talkLinesImposter:
+  - Do you need me to navigate you through something?
+  - I may have this helmet on, but I can certainly navigate us to a giant rock.
+  talkClueTemplates:
+  - '{name} was wandering the halls late at night. I think that person needs some
+    proper navigation.'
+  - '{name} started to break out in dance in our quarters. I wasn''t able to see
+    their dance, though. And no, it''s NOT because of my helmet.'
+  - I heard {name} having a nice chit-chat {deadCharacter} right before lights out.
+    Well... I actually couldn't see the lights going out.
+  - '{name} was playing with their food at dinner time. Probably stabbing their meatballs
+    or something?'
+  talkLinesFallback:
+  - Based on my clearly amazing vision with my helmet, I see that you are just as
+    puzzled as I am about something onboard, Captain.
+  - I hope we can find out what it is.
+  inspectLineImposter: It's pretty hard to see her facial expressions. Not sure whether
+    to trust her or not.
+  inspectLineInnocent: Her helmet seems like it would block most of her vision, but
+    she claims she can see everything just fine. Hopefully that is true.
+  day0:
+  - I'm the Navigation Officer. I navigate through things.
+  - Don't worry! I can navigate just fine even with this helmet on 24/7.
+  - I was able to lead you all to and back from the sunken Devil's Shell ship in
+    the deep trenches, did I not?
