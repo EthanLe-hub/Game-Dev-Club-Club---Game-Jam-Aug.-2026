@@ -70,6 +70,7 @@ public class GameManager : MonoBehaviour
         
         StartGame();
         currentImposter = characters[0];  
+        ImposterKillsSomeone(); 
         TransitionTo(GameState.NightAccusation); 
         
     }
