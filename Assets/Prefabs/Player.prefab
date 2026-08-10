@@ -54,7 +54,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3513176061473323549}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -131,6 +131,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05766035d8944d741b019d4711fc597b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
+  inputSmoothTime: 0.08
+  mouseSensitivity: 3
+  isTalking: 0
+  playerController: {fileID: 0}
 --- !u!114 &7252012440781462463
 MonoBehaviour:
   m_ObjectHideFlags: 0
