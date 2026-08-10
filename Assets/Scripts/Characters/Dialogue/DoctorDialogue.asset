@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc146af3af9f32647b32c802b6a247d5, type: 3}
+  m_Name: DoctorDialogue
+  m_EditorClassIdentifier: Assembly-CSharp::DoctorDialogue
+  talkLinesImposter:
+  - I have no knowledge about the deep-sea parasite.
+  - What are you talking about right now?
+  talkClueTemplates:
+  - The creature could be possessing anyone right now. {name} was meddling in the
+    comms room, but I hope the creature is not possessing them.
+  - A little disco never hurts anyone, but the way {name} danced in our quarters
+    looked like they were imitating tentacles.
+  - I heard {name} having a nice chit-chat {deadCharacter} right before lights out.
+    I would've gone there to warn them that they could be talking to the deep-sea
+    parasite.
+  - '{name} was playing with their food at dinner time. Weird.'
+  talkLinesFallback:
+  - There is a deep-sea parasite onboard our submarine who can possess any crewmate
+    at any time.
+  - What's worse is that they can kill their host and then jump to another crewmate
+    onboard.
+  inspectLineImposter: They say an apple a day keeps the doctor away, but the doctor
+    has not been eating his fruits lately.
+  inspectLineInnocent: The doctor has a lot of knowledge about medicine AND biology.
+    He knows what's up.
+  day0:
+  - Ah, salutations, captain.
+  - I am glad you and the other passengers enjoyed listening to my lecture on the
+    sunken Devil's Shell ship.
+  - If there is any other knowledge you seek, I'd be happy to share.
