@@ -49,7 +49,8 @@ public class GameManager : MonoBehaviour
 
     AccusationUI accusationUI; // Script to make accusation for the night.
     string accusationUITag = "Accusation UI";
-    int accusationScene = 1;
+    string accusationScene = "End of Day Judgement"; // Loaded by NAME, so reordering Build Settings (e.g. adding the title scene) cannot break it.
+    string gameOverScene = "GameOver"; // Scene loaded (replacing Main) when the game ends.
     public bool isAccusing = false; // True when making an accusation for the night.
 
     [SerializeField] NightSequence nightSequence; // Night door UI: knock narration, open/keep-closed choice, final hint.
@@ -69,17 +70,26 @@ public class GameManager : MonoBehaviour
     // Pause logic
     public bool paused = false;
 
-    void Awake() 
+    void Awake()
     {
-        if (Instance != null) // If instance already exists, destroy newly created copy. 
+        if (Instance != null) // If instance already exists, destroy newly created copy.
         {
-            Destroy(gameObject); 
-            return; 
+            Destroy(gameObject);
+            return;
         }
 
-        // Otherwise, set this first instance to be the static instance:
+        // Set this first instance to be the static instance.
+        // NOTE: deliberately NOT DontDestroyOnLoad - the judgement scene loads additively (this scene
+        // never unloads mid-game), and a persistent manager would carry dead references to destroyed
+        // scene objects when returning to the title screen or restarting.
         Instance = this;
-        DontDestroyOnLoad(gameObject);
+    }
+
+    // Clear the singleton when this scene unloads (e.g. going back to the title screen),
+    // so the next Main-scene load can register its fresh GameManager:
+    void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
     }
 
     void Start()
@@ -167,8 +177,13 @@ public class GameManager : MonoBehaviour
 
     void EndGame()
     {
-        bool win = currentImposter.isDead;
+        // Win = the imposter is dead (thrown overboard or killed). Everything else - the player
+        // opening the door to the imposter, or the days running out - counts as a loss:
+        bool win = currentImposter != null && currentImposter.isDead;
         Debug.Log("[GameManager] Game over. Win? " + win);
+
+        GameOverUI.PlayerWon = win; // Static handoff - this GameManager is destroyed when the scene switches.
+        SceneManager.LoadScene(gameOverScene);
     }
 
     void DayStart() {
@@ -219,7 +234,7 @@ public class GameManager : MonoBehaviour
         // Fade to black, teleport to the bedroom, fade back in - then the visitor knocks:
         cutsceneUI.GoToNight(
             () => TeleportPlayer(nightSpawnPoint.transform.position),
-            () => nightSequence.BeginKnock(doorVisitorIsImposter));
+            () => { if (nightSequence != null) nightSequence.BeginKnock(doorVisitorIsImposter); });
 
         TransitionTo(GameState.NightDoor);
     }
@@ -234,8 +249,20 @@ public class GameManager : MonoBehaviour
     {
         if (currentState != GameState.NightDoor || doorResolved) return;
 
-        isAtDoor = true;
+        // Ignore door interaction while narration is on screen - the Space press that advances
+        // the text is also the interact key, and must not open the door choice mid-reading:
+        if (nightSequence != null && nightSequence.IsShowingLines) return;
+
+        if (nightSequence == null)
+        {
+            // Night UI not wired up in this scene - resolve as "kept closed" so the night can still finish:
+            Debug.LogError("[GameManager] nightSequence is not assigned in the Inspector! Treating the door as kept closed.");
+            OpenDoor(false);
+            return;
+        }
+
         nightSequence.ShowDoorChoice();
+        isAtDoor = true; // Only after the UI actually opened, so a failure above can never leave this stuck on.
     }
 
     // called when the player chooses to open (or not open) the door at night.
@@ -263,7 +290,7 @@ public class GameManager : MonoBehaviour
         // Opened the door to an innocent visitor: they give one final, more accurate hint.
         // Then back to bed and on to judgement:
         Character hintGiver = GetRandomAliveInnocent();
-        if (hintGiver != null)
+        if (hintGiver != null && nightSequence != null)
         {
             string hint = BuildClueLine(hintGiver, finalHintAccuracy);
             nightSequence.ShowFinalHint(hintGiver.DisplayName, hint, () => cutsceneUI.GoToNight(FinishNight));
