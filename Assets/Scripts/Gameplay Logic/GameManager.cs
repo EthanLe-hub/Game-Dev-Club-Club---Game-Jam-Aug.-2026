@@ -53,7 +53,9 @@ public class GameManager : MonoBehaviour
     string gameOverScene = "GameOver"; // Scene loaded (replacing Main) when the game ends.
     public bool isAccusing = false; // True when making an accusation for the night.
 
-    //[SerializeField] NightSequence nightSequence; // Night door UI: knock narration, open/keep-closed choice, final hint.
+    // To disable the night door UI, leave this UNASSIGNED in the Inspector (null-guards handle it) -
+    // do not comment out the field, the code below references it and will not compile without it:
+    [SerializeField] NightSequence nightSequence; // Night door UI: knock narration, open/keep-closed choice, final hint.
     public bool isAtDoor = false; // True while the open/keep-closed choice is on screen (frees the cursor in Player.cs).
     bool doorResolved; // True once tonight's door choice has been made (prevents answering the door twice).
 
@@ -193,6 +195,8 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("Day Start");
 
+        if (SoundManager.Instance != null) SoundManager.Instance.PlayDayMusic();
+
         if (currentDay == 0) // If it is intro day (Day 0), simply open up to gameplay from black screen (no deaths on Day 0):
         {
             cutsceneUI.StartOfGame(() => TeleportPlayer(daySpawnPoint.transform.position));
@@ -229,6 +233,8 @@ public class GameManager : MonoBehaviour
 
         doorVisitorIsImposter = Random.value < imposterNightArrivalChance;
         doorResolved = false; // New night, new door choice.
+
+        if (SoundManager.Instance != null) SoundManager.Instance.PlayNightMusic();
         Debug.Log("[GameManager] Door visitor is imposter? " + doorVisitorIsImposter);
 
         // Fade to black, teleport to the bedroom, fade back in - then the visitor knocks:
