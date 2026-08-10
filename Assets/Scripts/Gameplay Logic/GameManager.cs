@@ -324,6 +324,7 @@ public class GameManager : MonoBehaviour
 
         if (lockedUpCharacter != null)
         {
+            lockedUpCharacter.gameObject.SetActive(true); 
             lockedUpCharacter.isLockedUp = false;
             lockedUpCharacter = null; 
         }
@@ -564,6 +565,7 @@ public class GameManager : MonoBehaviour
     {
         character.isLockedUp = true;
         lockedUpCharacter = character; 
+        lockedUpCharacter.gameObject.SetActive(false); 
     }
 
     void ThrowOverboard(Character character)
