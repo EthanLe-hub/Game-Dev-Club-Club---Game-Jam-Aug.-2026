@@ -36,6 +36,7 @@ public class GameManager : MonoBehaviour
     AccusationUI accusationUI; // Script to make accusation for the night. 
     string accusationUITag = "Accusation UI"; 
     int accusationScene = 1; 
+    public bool isAccusing = false; // True when making an accusation for the night. 
 
     // whether tonight's door visitor is the imposter, rolled at NightStart and resolved by OpenDoor().
     private bool doorVisitorIsImposter;
@@ -213,6 +214,8 @@ public class GameManager : MonoBehaviour
 
     IEnumerator NightAccusationRoutine()
     {
+        isAccusing = true; 
+
         // Uses LoadSceneMode.Additive to keep the main scene alive while the accusation Scene is on (needed so the AccusationUI.cs can retrieve the same characters' scripts in memory):
         AsyncOperation asyncLoading = SceneManager.LoadSceneAsync(accusationScene, LoadSceneMode.Additive); 
 
@@ -256,6 +259,7 @@ public class GameManager : MonoBehaviour
 
         // Unload the accusation Scene before transitioning:
         SceneManager.UnloadSceneAsync(accusationScene); 
+        isAccusing = false; 
 
         TransitionTo(GameState.NightEnd);
     }

@@ -84,6 +84,18 @@ public class Player : MonoBehaviour
         {
             OnEnable(); // Turn on player movement again if cutscene is no longer playing. 
         }
+        
+        // Disable movement during accusation, re-enable movement when cutscene is over:
+        if (GameManager.Instance.isAccusing && controls.asset.enabled)
+        {
+            SetCursorState(false); // Allow player to use cursor to make accusation. 
+            OnDisable(); // Turn off player movement while accusing. 
+        }
+        else if (!GameManager.Instance.isAccusing && !controls.asset.enabled)
+        {
+            SetCursorState(true); // Lock and hide the cursor when accusation is over. 
+            OnEnable(); // Turn on player movement again if no longer accusing for the night. 
+        }
 
         // Logic to move on from the death cutscene when it plays:
         if (GameManager.Instance.isCutsceneActive && Keyboard.current.spaceKey.wasPressedThisFrame)
