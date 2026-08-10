@@ -55,23 +55,92 @@ public class AccusationUI : MonoBehaviour
         yesButton.onClick.RemoveAllListeners();
         noButton.onClick.RemoveAllListeners(); 
 
-        // Navigation Officer:
-        characterButtons[0].onClick.AddListener(NavOfficerClicked);
+        for (int i = 0; i < GameManager.Instance.characters.Length; i++)
+        {
+            // Navigation Officer:
+            if (GameManager.Instance.characters[i] is NavigationOfficer)
+            {
+                if (!GameManager.Instance.characters[i].isDead)
+                {
+                    characterButtons[0].gameObject.SetActive(true); 
+                    characterButtons[0].onClick.AddListener(NavOfficerClicked); 
+                }
+                else
+                {
+                    characterButtons[0].gameObject.SetActive(false); 
+                }
+            }
 
-        // Cook:
-        characterButtons[1].onClick.AddListener(CookClicked); 
+            // Cook:
+            else if (GameManager.Instance.characters[i] is Cook)
+            {
+                if (!GameManager.Instance.characters[i].isDead)
+                {
+                    characterButtons[1].gameObject.SetActive(true); 
+                    characterButtons[1].onClick.AddListener(CookClicked);  
+                }
+                else
+                {
+                    characterButtons[1].gameObject.SetActive(false); 
+                }
+            }
 
-        // Engineer:
-        characterButtons[2].onClick.AddListener(EngineerClicked); 
+            // Engineer:
+            else if (GameManager.Instance.characters[i] is Engineer)
+            {
+                if (!GameManager.Instance.characters[i].isDead)
+                {
+                    characterButtons[2].gameObject.SetActive(true); 
+                    characterButtons[2].onClick.AddListener(EngineerClicked); 
+                }
+                else
+                {
+                    characterButtons[2].gameObject.SetActive(false); 
+                }
+            }
 
-        // Doctor/Scientist:
-        characterButtons[3].onClick.AddListener(DoctorClicked); 
+            // Doctor/Scientist:
+            else if (GameManager.Instance.characters[i] is Doctor)
+            {
+                if (!GameManager.Instance.characters[i].isDead)
+                {
+                    characterButtons[3].gameObject.SetActive(true); 
+                    characterButtons[3].onClick.AddListener(DoctorClicked); 
+                }
+                else
+                {
+                    characterButtons[3].gameObject.SetActive(false); 
+                }
+            }
 
-        // Rich Guy:
-        characterButtons[4].onClick.AddListener(RichGuyClicked); 
+            // Rich Guy:
+            else if (GameManager.Instance.characters[i] is RichGuy)
+            {
+                if (!GameManager.Instance.characters[i].isDead)
+                {
+                    characterButtons[4].gameObject.SetActive(true); 
+                    characterButtons[4].onClick.AddListener(RichGuyClicked); 
+                }
+                else
+                {
+                    characterButtons[4].gameObject.SetActive(false); 
+                }
+            }
 
-        // Rich Girl:
-        characterButtons[5].onClick.AddListener(RichGirlClicked); 
+            // Rich Girl:
+            else if (GameManager.Instance.characters[i] is RichGirl)
+            {
+                if (!GameManager.Instance.characters[i].isDead)
+                {
+                    characterButtons[5].gameObject.SetActive(true); 
+                    characterButtons[5].onClick.AddListener(RichGirlClicked); 
+                }
+                else
+                {
+                    characterButtons[5].gameObject.SetActive(false); 
+                }
+            }
+        }
 
         /** Action Buttons **/
         actionButtons[0].onClick.AddListener(LockUpClicked); 
@@ -85,10 +154,128 @@ public class AccusationUI : MonoBehaviour
         accusationPanel.SetActive(false); // Panel not opened until end of the night. 
     }
 
+    // Helper function to reset buttons in case crewmates have been eliminated throughout the game: 
+    void ResetButtons()
+    {
+        if (characterButtons != null)
+        {
+            for (int i = 0; i < characterButtons.Length; i++)
+            {
+                characterButtons[i].onClick.RemoveAllListeners(); 
+            }
+        }
+
+        if (actionButtons != null)
+        {
+            for (int i = 0; i < actionButtons.Length; i++)
+            {
+                actionButtons[i].onClick.RemoveAllListeners(); 
+            }
+        }
+
+        yesButton.onClick.RemoveAllListeners();
+        noButton.onClick.RemoveAllListeners(); 
+
+        for (int i = 0; i < GameManager.Instance.characters.Length; i++)
+        {
+            // Navigation Officer:
+            if (GameManager.Instance.characters[i] is NavigationOfficer)
+            {
+                if (!GameManager.Instance.characters[i].isDead)
+                {
+                    characterButtons[0].gameObject.SetActive(true); 
+                    characterButtons[0].onClick.AddListener(NavOfficerClicked); 
+                }
+                else
+                {
+                    characterButtons[0].gameObject.SetActive(false); 
+                }
+            }
+
+            // Cook:
+            else if (GameManager.Instance.characters[i] is Cook)
+            {
+                if (!GameManager.Instance.characters[i].isDead)
+                {
+                    characterButtons[1].gameObject.SetActive(true); 
+                    characterButtons[1].onClick.AddListener(CookClicked);  
+                }
+                else
+                {
+                    characterButtons[1].gameObject.SetActive(false); 
+                }
+            }
+
+            // Engineer:
+            else if (GameManager.Instance.characters[i] is Engineer)
+            {
+                if (!GameManager.Instance.characters[i].isDead)
+                {
+                    characterButtons[2].gameObject.SetActive(true); 
+                    characterButtons[2].onClick.AddListener(EngineerClicked); 
+                }
+                else
+                {
+                    characterButtons[2].gameObject.SetActive(false); 
+                }
+            }
+
+            // Doctor/Scientist:
+            else if (GameManager.Instance.characters[i] is Doctor)
+            {
+                if (!GameManager.Instance.characters[i].isDead)
+                {
+                    characterButtons[3].gameObject.SetActive(true); 
+                    characterButtons[3].onClick.AddListener(DoctorClicked); 
+                }
+                else
+                {
+                    characterButtons[3].gameObject.SetActive(false); 
+                }
+            }
+
+            // Rich Guy:
+            else if (GameManager.Instance.characters[i] is RichGuy)
+            {
+                if (!GameManager.Instance.characters[i].isDead)
+                {
+                    characterButtons[4].gameObject.SetActive(true); 
+                    characterButtons[4].onClick.AddListener(RichGuyClicked); 
+                }
+                else
+                {
+                    characterButtons[4].gameObject.SetActive(false); 
+                }
+            }
+
+            // Rich Girl:
+            else if (GameManager.Instance.characters[i] is RichGirl)
+            {
+                if (!GameManager.Instance.characters[i].isDead)
+                {
+                    characterButtons[5].gameObject.SetActive(true); 
+                    characterButtons[5].onClick.AddListener(RichGirlClicked); 
+                }
+                else
+                {
+                    characterButtons[5].gameObject.SetActive(false); 
+                }
+            }
+        }
+
+        /** Action Buttons **/
+        actionButtons[0].onClick.AddListener(LockUpClicked); 
+        actionButtons[1].onClick.AddListener(EjectClicked); 
+        actionButtons[2].onClick.AddListener(GoBackClicked); 
+        actionButtons[3].onClick.AddListener(DoNothingClicked); 
+    }
+
     // Called by the GameManager's NightAccusation() function:
     // LockUpClicked() and EjectClicked() will send results of character and action selected to GameManager's MakeAccusation() function: 
     public void OpenAccusationPanel()
     {
+        ResetButtons(); // Refresh the buttons in case any needs to be grayed out if crewmates have been eliminated. 
+        
         characterSelected = null; // Ensure selected character is always null when it is time to make an accusation. 
 
         // Ensure the yes and no buttons do not have any listeners yet when it is time to make an accusation. 
