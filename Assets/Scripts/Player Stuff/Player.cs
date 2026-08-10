@@ -20,8 +20,12 @@ public class Player : MonoBehaviour
     Vector3 camRight; // Which way is right of the current camera angle. 
 
     float moveSpeed = 6f; // Speed of the player.
-    float rotationSpeed = 2f; // Lower values slow down rotation. 
-    float gravity = 10f;  
+    float rotationSpeed = 2f; // Lower values slow down rotation.
+    float gravity = 10f;
+    [SerializeField] float inputSmoothTime = 0.08f; // Seconds for movement input to catch up to the sticks/keys (higher = softer acceleration).
+    [SerializeField] float mouseSensitivity = 3f; // Multiplies the Cinemachine look gains at startup (1 = as authored in the Inspector).
+    Vector2 smoothedMoveInput; // moveInput eased over time, so movement (and the camera following it) does not snap from 0 to full speed.
+    Vector2 moveInputVelocity; // Internal state for SmoothDamp.
     Vector3 desiredMoveDirection; // Movement calculated in relation to where the camera is facing. 
     Vector3 officialMoveDirection; // Final calculated movement direction with speed incorporated. 
     public bool isTalking = false; // Flag used when talking to other characters. 
@@ -58,51 +62,55 @@ public class Player : MonoBehaviour
         GameObject camObj = GameObject.FindGameObjectWithTag(cineCamTag); 
         if (camObj != null)
         {
-            camInputController = camObj.GetComponent<CinemachineInputAxisController>(); 
-            cinemachineCam = camObj.GetComponent<CinemachineCamera>(); 
+            camInputController = camObj.GetComponent<CinemachineInputAxisController>();
+            cinemachineCam = camObj.GetComponent<CinemachineCamera>();
             if (camInputController != null)
             {
-                camInputController.enabled = true; 
+                camInputController.enabled = true;
+
+                // Scale the authored look gains by mouseSensitivity (sign is preserved, so Y-invert stays as authored):
+                foreach (var controller in camInputController.Controllers)
+                {
+                    controller.Input.Gain *= mouseSensitivity;
+                }
             }
         }
     }
 
     void Update()
     {
-        // Keep cursor locked if user clicks back into the window: 
-        if (Cursor.lockState != CursorLockMode.Locked && !GameManager.Instance.isCutsceneActive)
+        
+        bool uiNeedsCursor = GameManager.Instance.isAccusing || GameManager.Instance.isAtDoor;
+        bool blockControls = GameManager.Instance.isCutsceneActive || uiNeedsCursor;
+
+        if (blockControls && controls.asset.enabled)
         {
-            SetCursorState(true); 
+            OnDisable(); // Freeze player movement while a cutscene or mouse-driven UI is up.
+        }
+        else if (!blockControls && !controls.asset.enabled)
+        {
+            OnEnable(); // Restore player movement once nothing is blocking it.
         }
 
-        // Disable movement during cutscene, re-enable movement when cutscene is over:
-        if (GameManager.Instance.isCutsceneActive && controls.asset.enabled)
+        if (uiNeedsCursor)
         {
-            OnDisable(); // Turn off player movement if cutscene is playing. 
-        }
-        else if (!GameManager.Instance.isCutsceneActive && !controls.asset.enabled)
-        {
-            OnEnable(); // Turn on player movement again if cutscene is no longer playing. 
-        }
-        
-        // Disable movement during accusation, re-enable movement when cutscene is over:
-        if (GameManager.Instance.isAccusing && controls.asset.enabled)
-        {
-            SetCursorState(false); // Allow player to use cursor to make accusation. 
-            if (camInputController != null)
+            if (Cursor.lockState == CursorLockMode.Locked) SetCursorState(false); // Free the cursor for UI buttons.
+            if (camInputController != null && camInputController.enabled)
             {
-                camInputController.enabled = false; // Prevent camera rotation with cursor during accusation. 
+                camInputController.enabled = false; // No camera rotation while clicking through UI.
             }
-            OnDisable(); // Turn off player movement while accusing. 
         }
-        else if (!GameManager.Instance.isAccusing && !controls.asset.enabled)
+        else
         {
-            SetCursorState(true); // Lock and hide the cursor when accusation is over. 
-            if (camInputController != null)
+            // Keep cursor locked for first-person control (also re-locks when the user clicks back into the window):
+            if (Cursor.lockState != CursorLockMode.Locked && !GameManager.Instance.isCutsceneActive)
             {
-                camInputController.enabled = true; // Re-enable camera rotation with cursor after accusation. 
+                SetCursorState(true);
             }
-            OnEnable(); // Turn on player movement again if no longer accusing for the night. 
+            if (camInputController != null && !camInputController.enabled)
+            {
+                camInputController.enabled = true;
+            }
         }
 
         // Logic to move on from the death cutscene when it plays:
@@ -124,7 +132,30 @@ public class Player : MonoBehaviour
             playerTransform.forward = camForward; 
         }
 
-        // Steps 3-6 for player movement are in FixedUpdate(). 
+        // (4) Smooth the raw input so movement accelerates/decelerates gently instead of snapping:
+        smoothedMoveInput = Vector2.SmoothDamp(smoothedMoveInput, moveInput, ref moveInputVelocity, inputSmoothTime);
+
+        // (5) Calculate movement direction based on captured camera angles:
+        // Move forward/backward and stay grounded (don't start escalating upwards), and move left/right:
+        desiredMoveDirection = (playerTransform.forward * smoothedMoveInput.y) + (playerTransform.right * smoothedMoveInput.x);
+
+        // (6) Grab y-axis movement direction (needed in case the player is not grounded):
+        float movementY = officialMoveDirection.y;
+
+        // (7) Finally, create the official movement direction vector (with speed included):
+        officialMoveDirection = desiredMoveDirection * moveSpeed;
+
+        // Check to ensure player is grounded (check its CharacterController's value "isGrounded"):
+        if (playerController.isGrounded)
+        {
+            officialMoveDirection.y = -1f; // Keep player stable on the ground if already on the ground.
+        }
+        else // If player not on the ground, have them slowly fall based on gravity over time:
+        {
+            officialMoveDirection.y = movementY - gravity * Time.deltaTime;
+        }
+
+        playerController.Move(officialMoveDirection * Time.deltaTime);
 
 /*
         // Mouse look (requires right-mouse-button hold to look around):
@@ -148,41 +179,6 @@ public class Player : MonoBehaviour
             }
         }
 */
-    }
-
-    void FixedUpdate()
-    {
-        // (4) Calculate movement direction based on captured camera angles:
-        // Move forward/backward and stay grounded (don't start escalating upwards), and move left/right: 
-        desiredMoveDirection = (playerTransform.forward * moveInput.y) + (playerTransform.right * moveInput.x); 
-
-/*
-        // Slowly rotate the player to match the camera angle:
-        if (desiredMoveDirection != Vector3.zero)
-        {
-            // Shift the player's transform values slowly in the desired direction: 
-            playerTransform.forward = Vector3.Slerp(playerTransform.forward, desiredMoveDirection, Time.deltaTime * 15f); 
-        }
-*/
-
-        // (5) Grab y-axis movement direction (needed in case the player is not grounded):
-        float movementY = officialMoveDirection.y; 
-
-        // (6) Finally, create the official movement direction vector (with speed included):
-        officialMoveDirection = desiredMoveDirection * moveSpeed; 
-
-        // Check to ensure player is grounded (check its CharacterController's value "isGrounded"):
-        if (playerController.isGrounded)
-        {
-            officialMoveDirection.y = -1f; // Keep player stable on the ground if already on the ground. 
-        }
-        else // If player not on the ground, have them slowly fall based on gravity over time:
-        {
-            officialMoveDirection.y = movementY - gravity * Time.deltaTime; 
-        }
-
-        // (7) Now, actually move the player over time:
-        playerController.Move(officialMoveDirection * Time.deltaTime); 
     }
 
     private void SetCursorState(bool isLocked)
