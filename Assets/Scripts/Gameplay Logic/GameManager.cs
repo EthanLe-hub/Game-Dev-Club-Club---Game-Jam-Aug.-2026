@@ -299,7 +299,7 @@ public class GameManager : MonoBehaviour
         if (hintGiver != null && nightSequence != null)
         {
             string hint = BuildClueLine(hintGiver, finalHintAccuracy);
-            //nightSequence.ShowFinalHint(hintGiver.DisplayName, hint, () => cutsceneUI.GoToNight(FinishNight));
+            nightSequence.ShowFinalHint(hintGiver.DisplayName, hint, () => cutsceneUI.GoToNight(FinishNight));
             return;
         }
 
@@ -395,9 +395,13 @@ public class GameManager : MonoBehaviour
     // imposter either kills its own host (and possesses a different alive character), kills someone else, or does not kill.
     void ImposterKillsSomeone()
     {
-        if (currentImposter == null || 
-            currentImposter.isDead || 
-            currentImposter.isLockedUp) return;
+        if (currentImposter == null ||
+            currentImposter.isDead ||
+            currentImposter.isLockedUp)
+        {
+            characterJustKilled = null; // Imposter can't act tonight, so no new death - do not let a stale value replay yesterday's cutscene.
+            return;
+        }
 
         bool killsHost = Random.value < killSelfChance;
         bool killsCrewmate = Random.value < killChance; 
