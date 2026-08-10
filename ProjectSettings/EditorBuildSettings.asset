@@ -9,13 +9,16 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
-    path: Assets/Scenes/End of Day Judgement.unity
-    guid: 91705d0d1f4065344a4acb09088020c1
-  - enabled: 1
     path: Assets/Scenes/TitleScreen.unity
     guid: 42a55c3d97dbd4674b12825bd13e0ac3
   - enabled: 1
+    path: Assets/Scenes/End of Day Judgement.unity
+    guid: 91705d0d1f4065344a4acb09088020c1
+  - enabled: 1
     path: Assets/Scenes/Main.unity
     guid: 6eed584cad2914f3892246cb9e33e3e8
+  - enabled: 1
+    path: Assets/Scenes/GameOver.unity
+    guid: 401130b4c19b04bf7940533de78b6150
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

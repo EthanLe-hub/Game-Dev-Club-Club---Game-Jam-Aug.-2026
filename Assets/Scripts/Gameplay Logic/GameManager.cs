@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
 
     public int currentDay = 0;
     private Character currentImposter;
+    private Character lockedUpCharacter; 
 
     // Class name of the character the imposter is currently possessing (e.g. "Engineer"), or null if none.
     // Dialogue clue dictionaries are keyed by this name.
@@ -321,6 +322,12 @@ public class GameManager : MonoBehaviour
     {
         isAccusing = true; 
 
+        if (lockedUpCharacter != null)
+        {
+            lockedUpCharacter.isLockedUp = false;
+            lockedUpCharacter = null; 
+        }
+
         // Uses LoadSceneMode.Additive to keep the main scene alive while the accusation Scene is on (needed so the AccusationUI.cs can retrieve the same characters' scripts in memory):
         AsyncOperation asyncLoading = SceneManager.LoadSceneAsync(accusationScene, LoadSceneMode.Additive); 
 
@@ -432,6 +439,7 @@ public class GameManager : MonoBehaviour
 
         Character victim = candidates[Random.Range(0, candidates.Count)];
         victim.isDead = true;
+        victim.gameObject.SetActive(false); // De-activate victim. 
         characterJustKilled = victim; // Random victim was killed, so assign it as the character who was just killed. 
 
         Debug.Log(victim.name + " was killed during the night.");
@@ -551,11 +559,13 @@ public class GameManager : MonoBehaviour
     void LockUp(Character character)
     {
         character.isLockedUp = true;
+        lockedUpCharacter = character; 
     }
 
     void ThrowOverboard(Character character)
     {
         character.isDead = true;
+        character.gameObject.SetActive(false); 
     }
 
     // Helper function to close death cutscene once player presses Spacebar key (called in Player.cs):
