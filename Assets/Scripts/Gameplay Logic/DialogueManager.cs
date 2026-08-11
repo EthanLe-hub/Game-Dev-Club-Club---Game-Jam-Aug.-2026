@@ -31,7 +31,7 @@ public class DialogueManager : MonoBehaviour
 
     void Update()
     {
-        if (Keyboard.current.spaceKey.wasPressedThisFrame && canAdvance)
+        if ((Keyboard.current.spaceKey.wasPressedThisFrame || Keyboard.current.eKey.wasPressedThisFrame) && canAdvance)
         {
             if (state == State.Lines) next();
             else if (state == State.Inspect) endDialogue();

@@ -58,7 +58,7 @@ public class NightSequence : MonoBehaviour
 
     void Update()
     {
-        if (canAdvance && Keyboard.current.spaceKey.wasPressedThisFrame) next();
+        if (canAdvance && (Keyboard.current.spaceKey.wasPressedThisFrame || Keyboard.current.eKey.wasPressedThisFrame)) next();
     }
 
     // Called by GameManager once the night transition has fully faded back in:

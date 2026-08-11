@@ -1,6 +1,7 @@
 // Ethan Le (8/6/2026):
 using System.Collections; // For IEnumerator. 
 using System.Collections.Generic;
+using TMPro; 
 using UnityEngine;
 using UnityEngine.SceneManagement; 
 
@@ -21,6 +22,7 @@ public class GameManager : MonoBehaviour
     public float clueAccuracy = 0.7f; // chance that a clue line names the real imposter (otherwise a random other living character)
     public float finalHintAccuracy = 0.9f; // accuracy of the hint given by an innocent night visitor (reward for risking the door)
     public int maxDays = 5;
+    [SerializeField] TextMeshProUGUI daysLeft; 
 
     // spawnpoints each day
     public GameObject nightSpawnPoint;
@@ -44,9 +46,11 @@ public class GameManager : MonoBehaviour
     
     public Character characterJustKilled; // Character who was just killed (needed to display the appropriate death cutscene image). 
     private int choicesLeft = 3;
+    [SerializeField] TextMeshProUGUI actionsLeft; 
 
     [SerializeField] CutsceneUI cutsceneUI; // Script to show death scene of new character each day.
     public bool isCutsceneActive = false; // True when a death scene is showing at the start of each day. 
+    [SerializeField] Sprite noDeathCutscene; // Cutscene for when no crewmates have been killed. 
 
     AccusationUI accusationUI; // Script to make accusation for the night.
     string accusationUITag = "Accusation UI";
@@ -195,6 +199,9 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("Day Start");
 
+        daysLeft.text = "Day: " + currentDay + " / " + maxDays; 
+        actionsLeft.text = "Actions left today: " + choicesLeft; 
+
         if (SoundManager.Instance != null) SoundManager.Instance.PlayDayMusic();
 
         if (currentDay == 0) // If it is intro day (Day 0), simply open up to gameplay from black screen (no deaths on Day 0):
@@ -212,7 +219,11 @@ public class GameManager : MonoBehaviour
             else
             {
                 Debug.Log("No deaths tonight!");
-                cutsceneUI.CloseCutscene(() => TeleportPlayer(daySpawnPoint.transform.position));
+                //cutsceneUI.CloseCutscene(() => TeleportPlayer(daySpawnPoint.transform.position));
+                if (noDeathCutscene != null)
+                {
+                    cutsceneUI.ShowDeathScene(noDeathCutscene, () => TeleportPlayer(daySpawnPoint.transform.position));
+                }
             }
         }
 
@@ -306,10 +317,9 @@ public class GameManager : MonoBehaviour
         cutsceneUI.GoToNight(FinishNight);
     }
 
-    // Shared tail of the night: the imposter acts, then the accusation begins (runs while the screen is black).
+    // Shared tail of the night: the accusation begins (runs while the screen is black), then imposter (if still alive) acts afterward.
     void FinishNight()
     {
-        ImposterKillsSomeone();
         TransitionTo(GameState.NightAccusation);
     }
 
@@ -328,6 +338,8 @@ public class GameManager : MonoBehaviour
             lockedUpCharacter.isLockedUp = false;
             lockedUpCharacter = null; 
         }
+
+        actionsLeft.gameObject.SetActive(false); 
 
         // Uses LoadSceneMode.Additive to keep the main scene alive while the accusation Scene is on (needed so the AccusationUI.cs can retrieve the same characters' scripts in memory):
         AsyncOperation asyncLoading = SceneManager.LoadSceneAsync(accusationScene, LoadSceneMode.Additive); 
@@ -372,6 +384,7 @@ public class GameManager : MonoBehaviour
 
         // Unload the accusation Scene before transitioning:
         SceneManager.UnloadSceneAsync(accusationScene); 
+        actionsLeft.gameObject.SetActive(true); 
         isAccusing = false; 
 
         TransitionTo(GameState.NightEnd);
@@ -381,7 +394,11 @@ public class GameManager : MonoBehaviour
     {   
         currentDay += 1;
         if (currentDay > maxDays) TransitionTo(GameState.GameEnd);
-        else TransitionTo(GameState.DayStart);
+        else 
+        {
+            ImposterKillsSomeone(); // Imposter kills at the end of the night (after accusation). 
+            TransitionTo(GameState.DayStart);
+        }
     }
 
     //                              ========
@@ -551,6 +568,7 @@ public class GameManager : MonoBehaviour
         if (choicesLeft <= 0) return;
 
         choicesLeft--;
+        actionsLeft.text = "Actions left today: " + choicesLeft; 
 
         if (choicesLeft <= 0)
             TransitionTo(GameState.DayEnd);
@@ -572,6 +590,11 @@ public class GameManager : MonoBehaviour
     {
         character.isDead = true;
         character.gameObject.SetActive(false); 
+
+        if (character == currentImposter)
+        {
+            TransitionTo(GameState.GameEnd);
+        }
     }
 
     // Helper function to close death cutscene once player presses Spacebar key (called in Player.cs):
