@@ -16,6 +16,7 @@ public class CutsceneUI : MonoBehaviour
     [SerializeField] Image cutsceneImage;
     [SerializeField] CanvasGroup fadeCanvasGroup;
     [SerializeField] TextMeshProUGUI deathText; // "You died" message shown over the black screen (place it above the Black Screen in the canvas hierarchy).
+    [SerializeField] GameObject dialoguePanel; // Holds the "deathText" component as its grandchild. 
 
     float fadeDuration = 1f; // 1 second for the fade. 
     float inBetweenWait = 1f;
@@ -176,6 +177,7 @@ public class CutsceneUI : MonoBehaviour
         {
             deathText.text = message;
             deathText.gameObject.SetActive(true); // Fades in together with the black screen.
+            dialoguePanel.gameObject.SetActive(true); // Allows the "deathText" to show up onscreen. 
         }
 
         yield return StartCoroutine(Fading(1));

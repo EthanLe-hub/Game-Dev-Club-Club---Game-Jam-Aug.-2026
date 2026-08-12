@@ -70,6 +70,11 @@ public class GameManager : MonoBehaviour
     private enum GameState { GameStart, GameEnd, DayStart, DayEnd, NightStart, NightDoor, NightAccusation, NightEnd }
     public enum AccusationType { LockUp, ThrowOverboard, None }
 
+    // Sound effects:
+    [SerializeField] AudioClip throwOverboardMan; 
+    [SerializeField] AudioClip throwOverboardWoman; 
+    [SerializeField] AudioClip imposterKills; 
+
 
     private GameState currentState;
 
@@ -189,6 +194,8 @@ public class GameManager : MonoBehaviour
         Debug.Log("[GameManager] Game over. Win? " + win);
 
         GameOverUI.PlayerWon = win; // Static handoff - this GameManager is destroyed when the scene switches.
+        GameOverUI.crewmatesSaved = GetNumberAliveInnocent(); 
+        GameOverUI.imposterName = currentImposter != null ? currentImposter.DisplayName : "None"; 
         SceneManager.LoadScene(gameOverScene);
     }
 
@@ -198,6 +205,15 @@ public class GameManager : MonoBehaviour
         else choicesLeft = 3;
 
         Debug.Log("Day Start");
+
+        // Check to see if only the imposter is left (aside from the Captain who is you) before starting the day.
+        // If yes, then end the game rather than wait for the night accusation. 
+        List<Character> candidates = GetAliveExcept(currentImposter);
+        if (candidates.Count == 0)
+        {
+            TransitionTo(GameState.GameEnd);
+            return;
+        }
 
         daysLeft.text = "Day: " + currentDay + " / " + maxDays; 
         actionsLeft.text = "Actions left today: " + choicesLeft; 
@@ -334,8 +350,13 @@ public class GameManager : MonoBehaviour
 
         if (lockedUpCharacter != null)
         {
-            lockedUpCharacter.gameObject.SetActive(true); 
-            lockedUpCharacter.isLockedUp = false;
+            // Free the locked-up character if they are not dead:
+            if (lockedUpCharacter.isLockedUp && !lockedUpCharacter.isDead)
+            {
+                lockedUpCharacter.isLockedUp = false;
+                lockedUpCharacter.gameObject.SetActive(true); 
+            }
+
             lockedUpCharacter = null; 
         }
 
@@ -439,6 +460,9 @@ public class GameManager : MonoBehaviour
         currentImposter.isDead = true;
         currentImposter.isImposter = false;
         characterJustKilled = currentImposter; // Imposter killed its current host body, so that was the character who was just killed. 
+        characterJustKilled.gameObject.SetActive(false); // De-activate original host who just got killed. 
+
+        SoundManager.Instance.PlaySfx(imposterKills); // Sound effect when imposter kills. 
 
         List<Character> candidates = GetAliveExcept(currentImposter);
         if (candidates.Count == 0)
@@ -464,6 +488,8 @@ public class GameManager : MonoBehaviour
         victim.gameObject.SetActive(false); // De-activate victim. 
         characterJustKilled = victim; // Random victim was killed, so assign it as the character who was just killed. 
 
+        SoundManager.Instance.PlaySfx(imposterKills); // Sound effect when imposter kills. 
+
         Debug.Log(victim.name + " was killed during the night.");
     }
 
@@ -472,7 +498,8 @@ public class GameManager : MonoBehaviour
         List<Character> result = new List<Character>();
         foreach (Character character in characters)
         {
-            if (!character.isDead && character != exclude)
+            // Imposter cannot kill or possess anyone who is dead, themself, or locked up:
+            if (!character.isDead && character != exclude && !character.isLockedUp)
                 result.Add(character);
         }
         return result;
@@ -538,6 +565,19 @@ public class GameManager : MonoBehaviour
         return candidates[Random.Range(0, candidates.Count)];
     }
 
+    // Get number of alive innocent crewmates left:
+    public int GetNumberAliveInnocent()
+    {
+        List<Character> candidates = new List<Character>();
+        foreach (Character character in characters)
+        {
+            if (character.isDead || character.isLockedUp || character == currentImposter) continue;
+            candidates.Add(character);
+        }
+
+        return candidates.Count;
+    }
+
     // setting characters to be imposter
     void SetImposter(int imposter)
     {
@@ -590,6 +630,24 @@ public class GameManager : MonoBehaviour
     {
         character.isDead = true;
         character.gameObject.SetActive(false); 
+
+        // Throw overboard sound effect if it is a female:
+        if ((character is Engineer) || (character is NavigationOfficer) || (character is RichGirl))
+        {
+            if (SoundManager.Instance != null && throwOverboardWoman != null)
+            {
+                SoundManager.Instance.PlaySfx(throwOverboardWoman);
+            }
+        }
+
+        // Throw overboard sound effect if it is a male:
+        else if ((character is Cook) || (character is Doctor) || (character is RichGuy))
+        {
+            if (SoundManager.Instance != null && throwOverboardMan != null)
+            {
+                SoundManager.Instance.PlaySfx(throwOverboardMan); 
+            }
+        }
 
         if (character == currentImposter)
         {
