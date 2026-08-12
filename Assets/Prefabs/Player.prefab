@@ -132,7 +132,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   inputSmoothTime: 0.08
-  mouseSensitivity: 3
+  mouseSensitivity: 1
   isTalking: 0
   playerController: {fileID: 0}
 --- !u!114 &7252012440781462463

@@ -9,13 +9,14 @@ public class GameOverUI : MonoBehaviour
 
     [SerializeField] GameObject winGraphic;  // Shown when the imposter was caught.
     [SerializeField] GameObject loseGraphic; // Shown when the imposter won.
-    [SerializeField] TextMeshProUGUI resultsText; // Shows results of the game. 
+    [SerializeField] TextMeshProUGUI winResultsText; // Shows win results of the game. 
+    [SerializeField] TextMeshProUGUI loseResultsText; // Shows lose results of the game. 
 
     [SerializeField] string gameSceneName = "Main";
     [SerializeField] string titleSceneName = "TitleScreen";
 
-    [SerializeField] string winResultsText = "Number of crewmates you saved: ";
-    [SerializeField] string loseResultsText = "Current imposter who killed you was: "; 
+    string winResultsString = "Passengers saved: ";
+    string loseResultsString = "Parasite was: "; 
     public static int crewmatesSaved = 0; 
     public static string imposterName = ""; 
 
@@ -35,15 +36,19 @@ public class GameOverUI : MonoBehaviour
             loseGraphic.SetActive(!PlayerWon);
         }
 
-        if (resultsText != null)
+        if (winResultsText != null && loseResultsText != null)
         {
             if (PlayerWon)
             {
-                resultsText.text = winResultsText + crewmatesSaved; 
+                winResultsText.text = winResultsString + crewmatesSaved; 
+                winResultsText.gameObject.SetActive(true); // Turn on win results text when player has won.
+                loseResultsText.gameObject.SetActive(false); // Disable lose results text. 
             }
             else
             {
-                resultsText.text = loseResultsText + imposterName; 
+                loseResultsText.text = loseResultsString + imposterName; 
+                winResultsText.gameObject.SetActive(false); // Disable win results text.
+                loseResultsText.gameObject.SetActive(true); // Disable lose results text when player has lost. 
             }
         }
     }

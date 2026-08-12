@@ -16,10 +16,10 @@ public class RichGirlDialogue : DialogueParent
         // Innocent Rich Guy's clue templates ({name} = suspect, {deadCharacter} = last night's victim):
         talkClueTemplates = new[]
         {
-            "My husband and I saw {name} spending too long in the bathroom. I wonder why.",
+            "I saw {name} spending too long in the bathroom. I wonder why.",
             "I kind of enjoyed the dancing that {name} was doing in our quarters.",
-            "{name} was arguing a lot with {deadCharacter}. Reminds me of my husband and I sometimes.",
-            "{name} kept begging my husband for money. He said no."
+            "{name} was arguing a lot with {deadCharacter}. Reminds me of my husband and I back then.",
+            "{name} kept begging me for money. I said no."
         };
 
         talkLinesFallback = new[]
