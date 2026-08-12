@@ -648,11 +648,6 @@ public class GameManager : MonoBehaviour
                 SoundManager.Instance.PlaySfx(throwOverboardMan); 
             }
         }
-
-        if (character == currentImposter)
-        {
-            TransitionTo(GameState.GameEnd);
-        }
     }
 
     // Helper function to close death cutscene once player presses Spacebar key (called in Player.cs):
