@@ -48,26 +48,30 @@ public class DoctorDialogue : DialogueParent
                 {"NavigationOfficer", new[] {
                     "Oh dear. Leah Jones appears to have been killed by some foreign creature.", 
                     "Precisely, the same creature that stowed away from Devil's Shell.", 
+                    "It can jump hosts at any time too.",
                     "But who could it be possessing right now?"
                 } },
                 {"Cook", new[] {
                     "Andy O'Connor was killed by a foreign creature that stowed away from Devil's Shell.", 
+                    "If it has jumped hosts, we could be in big trouble.",
                     "But who could it be possessing right now?"
                 } },
                 {"Engineer", new[] {
                     "The Devil himself…", 
                     "Not the actual Devil Devil from the underworld.",
                     "I mean the deep-sea parasite that lurks around Devil's Shell.",
-                    "It's onboard somewhere, posing as one of us."
+                    "It's onboard somewhere, posing as one of us. Maybe even jumping hosts in the middle of the night."
                 } },
                 {"RichGuy", new[] {
                     "Yikes, I can't believe Richard is dead.", 
                     "Well, whatever killed him is still onboard.",
-                    "I advise you find the poser fast before each of us gets killed."
+                    "I advise you find the poser fast before each of us gets killed.",
+                    "And beware of the parasite hopping to a new person."
                 } },
                 {"RichGirl", new[] {
                     "Mary, huh?", 
                     "We gotta find this parasite fast.",
+                    "If we don't, it'll kill all of us or change its host.",
                     "Interrogate every person, if you must."
                 } }
             },

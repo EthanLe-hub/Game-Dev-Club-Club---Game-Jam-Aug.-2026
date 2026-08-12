@@ -23,7 +23,7 @@ public class Player : MonoBehaviour
     float rotationSpeed = 2f; // Lower values slow down rotation.
     float gravity = 10f;
     [SerializeField] float inputSmoothTime = 0.08f; // Seconds for movement input to catch up to the sticks/keys (higher = softer acceleration).
-    [SerializeField] float mouseSensitivity = 3f; // Multiplies the Cinemachine look gains at startup (1 = as authored in the Inspector).
+    [SerializeField] float mouseSensitivity = 1f; // Multiplies the Cinemachine look gains at startup (1 = as authored in the Inspector).
     Vector2 smoothedMoveInput; // moveInput eased over time, so movement (and the camera following it) does not snap from 0 to full speed.
     Vector2 moveInputVelocity; // Internal state for SmoothDamp.
     Vector3 desiredMoveDirection; // Movement calculated in relation to where the camera is facing. 

@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
     // chances the imposter does something, for easily adjustable difficulty
     public float killSelfChance = 0.4f;
     public float killChance = 0.5f;
-    public float imposterNightArrivalChance = 2.0f;
+    public float imposterNightArrivalChance = 0.4f;
     public float clueAccuracy = 0.7f; // chance that a clue line names the real imposter (otherwise a random other living character)
     public float finalHintAccuracy = 0.9f; // accuracy of the hint given by an innocent night visitor (reward for risking the door)
     public int maxDays = 5;
@@ -47,6 +47,10 @@ public class GameManager : MonoBehaviour
     public Character characterJustKilled; // Character who was just killed (needed to display the appropriate death cutscene image). 
     private int choicesLeft = 3;
     [SerializeField] TextMeshProUGUI actionsLeft; 
+
+    [SerializeField] TextMeshProUGUI instructionsText; // Updates between daytime and nighttime. 
+    string daytimeText = "A deep-sea parasite is possessing someone...\n\n(1) E or Spacebar to get info from NPCs.\n\n(2) Interact with yellow wheel door to end off the day + accuse.";
+    string nighttimeText = "Click E or Spacebar on the door to choose whether or not to answer it.";
 
     [SerializeField] CutsceneUI cutsceneUI; // Script to show death scene of new character each day.
     public bool isCutsceneActive = false; // True when a death scene is showing at the start of each day. 
@@ -217,6 +221,7 @@ public class GameManager : MonoBehaviour
 
         daysLeft.text = "Day: " + currentDay + " / " + maxDays; 
         actionsLeft.text = "Actions left today: " + choicesLeft; 
+        instructionsText.text = daytimeText; // Shows what to do during the daytime. 
 
         if (SoundManager.Instance != null) SoundManager.Instance.PlayDayMusic();
 
@@ -256,9 +261,18 @@ public class GameManager : MonoBehaviour
 
     void NightStart()
     {
+        instructionsText.text = nighttimeText; // Shows what to do during the nighttime. 
+
         Debug.Log("[GameManager] imposterNightArrivalChance = " + imposterNightArrivalChance);
 
         doorVisitorIsImposter = Random.value < imposterNightArrivalChance;
+
+        // If imposter is currently locked up, explicitly set doorVisitorIsImposter to false (imposter cannot knock on your door when locked up):
+        if (currentImposter != null && currentImposter.isLockedUp)
+        {
+            doorVisitorIsImposter = false; 
+        }
+
         doorResolved = false; // New night, new door choice.
 
         if (SoundManager.Instance != null) SoundManager.Instance.PlayNightMusic();
@@ -361,6 +375,7 @@ public class GameManager : MonoBehaviour
         }
 
         actionsLeft.gameObject.SetActive(false); 
+        instructionsText.gameObject.SetActive(false); 
 
         // Uses LoadSceneMode.Additive to keep the main scene alive while the accusation Scene is on (needed so the AccusationUI.cs can retrieve the same characters' scripts in memory):
         AsyncOperation asyncLoading = SceneManager.LoadSceneAsync(accusationScene, LoadSceneMode.Additive); 
@@ -406,6 +421,7 @@ public class GameManager : MonoBehaviour
         // Unload the accusation Scene before transitioning:
         SceneManager.UnloadSceneAsync(accusationScene); 
         actionsLeft.gameObject.SetActive(true); 
+        instructionsText.gameObject.SetActive(true); 
         isAccusing = false; 
 
         TransitionTo(GameState.NightEnd);
@@ -464,10 +480,9 @@ public class GameManager : MonoBehaviour
 
         SoundManager.Instance.PlaySfx(imposterKills); // Sound effect when imposter kills. 
 
-        List<Character> candidates = GetAliveExcept(currentImposter);
+        List<Character> candidates = GetAliveForKillExcept(currentImposter);
         if (candidates.Count == 0)
         {
-            TransitionTo(GameState.GameEnd);
             return;
         }
 
@@ -480,7 +495,7 @@ public class GameManager : MonoBehaviour
 
     void KillRandomCrewmate()
     {
-        List<Character> candidates = GetAliveExcept(currentImposter);
+        List<Character> candidates = GetAliveForKillExcept(currentImposter);
         if (candidates.Count == 0) return;
 
         Character victim = candidates[Random.Range(0, candidates.Count)];
@@ -494,6 +509,18 @@ public class GameManager : MonoBehaviour
     }
 
     List<Character> GetAliveExcept(Character exclude)
+    {
+        List<Character> result = new List<Character>();
+        foreach (Character character in characters)
+        {
+            // Retrieve anyone who is still alive and not the imposter (does not matter if crewmates are locked up):
+            if (!character.isDead && character != exclude)
+                result.Add(character);
+        }
+        return result;
+    }
+
+    List<Character> GetAliveForKillExcept(Character exclude)
     {
         List<Character> result = new List<Character>();
         foreach (Character character in characters)
