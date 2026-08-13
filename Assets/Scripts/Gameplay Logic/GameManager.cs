@@ -223,7 +223,7 @@ public class GameManager : MonoBehaviour
 
         if (currentDay == 0) // If it is intro day (Day 0), simply open up to gameplay from black screen (no deaths on Day 0):
         {
-            cutsceneUI.StartOfGame(() => TeleportPlayer(daySpawnPoint.transform.position));
+            cutsceneUI.StartOfGame(() => TeleportPlayer(daySpawnPoint));
         }
 
         else // If it is after the intro day (after Day 0), then show death cutscenes (no deaths on Day 0):
@@ -231,7 +231,7 @@ public class GameManager : MonoBehaviour
             if (characterJustKilled != null)
             {
                 Debug.Log(characterJustKilled.name + " death scene is showing");
-                cutsceneUI.ShowDeathScene(characterJustKilled.deathSprite, () => TeleportPlayer(daySpawnPoint.transform.position));
+                cutsceneUI.ShowDeathScene(characterJustKilled.deathSprite, () => TeleportPlayer(daySpawnPoint));
             }
             else
             {
@@ -239,7 +239,7 @@ public class GameManager : MonoBehaviour
                 //cutsceneUI.CloseCutscene(() => TeleportPlayer(daySpawnPoint.transform.position));
                 if (noDeathCutscene != null)
                 {
-                    cutsceneUI.ShowDeathScene(noDeathCutscene, () => TeleportPlayer(daySpawnPoint.transform.position));
+                    cutsceneUI.ShowDeathScene(noDeathCutscene, () => TeleportPlayer(daySpawnPoint));
                 }
             }
         }
@@ -276,7 +276,7 @@ public class GameManager : MonoBehaviour
 
         // Fade to black, teleport to the bedroom, fade back in - then the visitor knocks:
         cutsceneUI.GoToNight(
-            () => TeleportPlayer(nightSpawnPoint.transform.position),
+            () => TeleportPlayer(nightSpawnPoint),
             () => { if (nightSequence != null) nightSequence.BeginKnock(doorVisitorIsImposter); });
 
         TransitionTo(GameState.NightDoor);
@@ -679,10 +679,10 @@ public class GameManager : MonoBehaviour
     }
 
 
-    void TeleportPlayer(Vector3 pos)
+    void TeleportPlayer(GameObject pos)
     {
         player.playerController.enabled = false;
-        player.transform.position = pos;
+        player.transform.SetPositionAndRotation(pos.transform.position, pos.transform.rotation);
         player.playerController.enabled = true;
     }
 
