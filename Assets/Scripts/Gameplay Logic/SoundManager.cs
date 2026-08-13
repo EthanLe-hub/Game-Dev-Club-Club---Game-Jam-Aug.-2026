@@ -14,6 +14,7 @@ public class SoundManager : MonoBehaviour
     [SerializeField] AudioClip dayMusic;      // Played from DayStart (GameManager calls PlayDayMusic).
     [SerializeField] AudioClip nightMusic;    // Played from NightStart (GameManager calls PlayNightMusic).
     [SerializeField] float musicVolume = 0.4f; // Music sits UNDER gameplay - keep well below the SFX volume.
+    [SerializeField] float sfxVolume = 0.25f;     // SFX sits OVER gameplay - keep at full volume.
     [SerializeField] float musicFadeSeconds = 1f; // Crossfade length when switching tracks.
 
     Coroutine musicFade; // The in-progress track switch, so a new switch can cancel it.
@@ -120,7 +121,7 @@ public class SoundManager : MonoBehaviour
     public void PlayImposterKillsSFX()
     {
         if (sfxSource == null || imposterKills == null) return;
-        sfxSource.PlayOneShot(imposterKills, 1f);
+        sfxSource.PlayOneShot(imposterKills, sfxVolume);
     }
 
     // Called every frame while the player is walking (see Player.cs) - rate-limits itself
@@ -137,6 +138,6 @@ public class SoundManager : MonoBehaviour
     public void PlayLockUpSFX()
     {
         if (sfxSource == null || lockUpClip == null) return;
-        sfxSource.PlayOneShot(lockUpClip, 1f);
+        sfxSource.PlayOneShot(lockUpClip, sfxVolume);
     }
 }
