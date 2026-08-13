@@ -12436,12 +12436,12 @@ MonoBehaviour:
   dayMusic: {fileID: 8300000, guid: bb33aa99749284a5ea23002a7e51a0c8, type: 3}
   nightMusic: {fileID: 8300000, guid: 12b60fdc978714c28845448c25b5ccde, type: 3}
   musicVolume: 0.4
-  sfxVolume: 0.25
+  sfxVolume: 0.1
   musicFadeSeconds: 1
   footstepClips:
   - {fileID: 8300000, guid: 6847620b8307c48be9f7c3f363b10ece, type: 3}
   footstepInterval: 0.45
-  footstepVolume: 0.4
+  footstepVolume: 0.25
   imposterKills: {fileID: 8300000, guid: 4c418e69e7bbc45de94c6a4580ff31c1, type: 3}
   lockUpClip: {fileID: 8300000, guid: 8cfd189deb15c4b2ebebaa2ccdb3e9db, type: 3}
 --- !u!4 &808860266
