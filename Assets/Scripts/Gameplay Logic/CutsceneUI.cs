@@ -20,6 +20,7 @@ public class CutsceneUI : MonoBehaviour
 
     float fadeDuration = 1f; // 1 second for the fade. 
     float inBetweenWait = 1f;
+    float killingWait = 2f; // Seconds between the accusation SFX (e.g. throw overboard) and the imposter's own kill SFX, so they do not overlap.
     
     bool isTransitioning = false; // True when death image is loading in. 
     float timePassed; // Keeps track of how long it has been in the transition for (gets compared against fadeDuration to know when fade is done). 
@@ -154,6 +155,26 @@ public class CutsceneUI : MonoBehaviour
         isTransitioning = false;
 
         onComplete?.Invoke();
+    }
+
+    public void FadeToBlack(Action onBlackScreen)
+    {
+        if (isTransitioning) return;
+        StartCoroutine(FadeToBlackRoutine(onBlackScreen));
+    }
+
+    IEnumerator FadeToBlackRoutine(Action onBlackScreen)
+    {
+        isTransitioning = true;
+        fadeCanvasGroup.blocksRaycasts = true;
+
+        cutsceneImage.enabled = false;
+        panelUI.SetActive(true);
+        yield return StartCoroutine(Fading(1));
+        yield return new WaitForSeconds(killingWait); // Wait a bit before the imposter's kill SFX plays, so it does not overlap with the accusation SFX (e.g. throw overboard).
+
+        isTransitioning = false; // Cleared before the callback so it can immediately start its own cutscene transition (e.g. ShowDeathScene).
+        onBlackScreen?.Invoke();
     }
 
     // Shows the "you died" screen when the player opens the door to the imposter:

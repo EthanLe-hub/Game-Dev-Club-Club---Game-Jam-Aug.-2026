@@ -23,6 +23,9 @@ public class SoundManager : MonoBehaviour
     [SerializeField] float footstepInterval = 0.45f; // Seconds between steps while walking.
     [SerializeField] float footstepVolume = 0.8f;
 
+    [SerializeField] AudioClip imposterKills; 
+    [SerializeField] AudioClip lockUpClip;
+
     float lastFootstepTime;
 
     void Awake()
@@ -108,10 +111,16 @@ public class SoundManager : MonoBehaviour
     }
 
     // General one-shot sound effect (door knock, UI clicks, etc):
-    public void PlaySfx(AudioClip clip, float volume = 1f)
+    public void PlaySFX(AudioClip clip, float volume = 1f)
     {
         if (sfxSource == null || clip == null) return;
         sfxSource.PlayOneShot(clip, volume);
+    }
+
+    public void PlayImposterKillsSFX()
+    {
+        if (sfxSource == null || imposterKills == null) return;
+        sfxSource.PlayOneShot(imposterKills, 1f);
     }
 
     // Called every frame while the player is walking (see Player.cs) - rate-limits itself
@@ -123,5 +132,11 @@ public class SoundManager : MonoBehaviour
 
         lastFootstepTime = Time.time;
         sfxSource.PlayOneShot(footstepClips[Random.Range(0, footstepClips.Length)], footstepVolume);
+    }
+
+    public void PlayLockUpSFX()
+    {
+        if (sfxSource == null || lockUpClip == null) return;
+        sfxSource.PlayOneShot(lockUpClip, 1f);
     }
 }

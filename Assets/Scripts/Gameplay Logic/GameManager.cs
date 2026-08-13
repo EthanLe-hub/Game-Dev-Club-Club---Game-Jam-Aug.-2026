@@ -74,16 +74,12 @@ public class GameManager : MonoBehaviour
     private enum GameState { GameStart, GameEnd, DayStart, DayEnd, NightStart, NightDoor, NightAccusation, NightEnd }
     public enum AccusationType { LockUp, ThrowOverboard, None }
 
-    // Sound effects:
-    [SerializeField] AudioClip throwOverboardMan; 
-    [SerializeField] AudioClip throwOverboardWoman; 
-    [SerializeField] AudioClip imposterKills; 
-
-
     private GameState currentState;
 
     // Pause logic
     public bool paused = false;
+
+    public GameObject lockedUpSpawnPoint;
 
     void Awake()
     {
@@ -428,14 +424,10 @@ public class GameManager : MonoBehaviour
     }
 
     void NightEnd()
-    {   
+    {
         currentDay += 1;
         if (currentDay > maxDays) TransitionTo(GameState.GameEnd);
-        else 
-        {
-            ImposterKillsSomeone(); // Imposter kills at the end of the night (after accusation). 
-            TransitionTo(GameState.DayStart);
-        }
+        else cutsceneUI.FadeToBlack(() => { ImposterKillsSomeone(); TransitionTo(GameState.DayStart); });
     }
 
     //                              ========
@@ -478,7 +470,7 @@ public class GameManager : MonoBehaviour
         characterJustKilled = currentImposter; // Imposter killed its current host body, so that was the character who was just killed. 
         characterJustKilled.gameObject.SetActive(false); // De-activate original host who just got killed. 
 
-        SoundManager.Instance.PlaySfx(imposterKills); // Sound effect when imposter kills. 
+        SoundManager.Instance.PlayImposterKillsSFX(); // Sound effect when imposter kills. 
 
         List<Character> candidates = GetAliveForKillExcept(currentImposter);
         if (candidates.Count == 0)
@@ -503,7 +495,7 @@ public class GameManager : MonoBehaviour
         victim.gameObject.SetActive(false); // De-activate victim. 
         characterJustKilled = victim; // Random victim was killed, so assign it as the character who was just killed. 
 
-        SoundManager.Instance.PlaySfx(imposterKills); // Sound effect when imposter kills. 
+        SoundManager.Instance.PlayImposterKillsSFX(); // Sound effect when imposter kills. 
 
         Debug.Log(victim.name + " was killed during the night.");
     }
@@ -622,10 +614,29 @@ public class GameManager : MonoBehaviour
     {
         foreach (Character character in characters)
         {
-            if (character.isDead) continue;
-            if (character.isLockedUp) continue;
+            if (character.isDead)
+            {
 
-            character.PlaceAtRandomSpawn();
+                continue;
+
+            }
+            
+            else if (character.isLockedUp)
+            {
+
+                character.PlaceAtSpawn(lockedUpSpawnPoint);
+                continue;
+
+            }
+
+            else
+            {
+
+                character.PlaceAtRandomSpawn();
+
+            }
+
+            
         }
     }
 
@@ -650,7 +661,7 @@ public class GameManager : MonoBehaviour
     {
         character.isLockedUp = true;
         lockedUpCharacter = character; 
-        lockedUpCharacter.gameObject.SetActive(false); 
+        SoundManager.Instance.PlayLockUpSFX();
     }
 
     void ThrowOverboard(Character character)
@@ -658,23 +669,7 @@ public class GameManager : MonoBehaviour
         character.isDead = true;
         character.gameObject.SetActive(false); 
 
-        // Throw overboard sound effect if it is a female:
-        if ((character is Engineer) || (character is NavigationOfficer) || (character is RichGirl))
-        {
-            if (SoundManager.Instance != null && throwOverboardWoman != null)
-            {
-                SoundManager.Instance.PlaySfx(throwOverboardWoman);
-            }
-        }
-
-        // Throw overboard sound effect if it is a male:
-        else if ((character is Cook) || (character is Doctor) || (character is RichGuy))
-        {
-            if (SoundManager.Instance != null && throwOverboardMan != null)
-            {
-                SoundManager.Instance.PlaySfx(throwOverboardMan); 
-            }
-        }
+        SoundManager.Instance.PlaySFX(character.throwOverboardSound);
     }
 
     // Helper function to close death cutscene once player presses Spacebar key (called in Player.cs):

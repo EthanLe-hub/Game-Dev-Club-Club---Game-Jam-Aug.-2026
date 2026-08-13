@@ -16,6 +16,8 @@ public class Character : MonoBehaviour
     //[SerializeField] string[] imposterTexts; // Fill in via Unity Inspector with character's dialogue as imposter. 
     public DialogueParent dialogue;
 
+    public AudioClip throwOverboardSound;
+
     public Sprite deathSprite; // Fill in via Unity Inspector with the cutscene image to show when this character dies.
 
     public Texture2D inspectSpriteImposter;
@@ -41,6 +43,17 @@ public class Character : MonoBehaviour
     public void LockUp()
     {
         OnLockingUp?.Invoke(); // Trigger the event, which the subclass listens for.
+    }
+
+    public void PlaceAtSpawn(GameObject spawnPoint)
+    {
+        if (spawnPoint == null)
+        {
+            Debug.LogWarning(name + " has no spawn point assigned.");
+            return;
+        }
+
+        transform.SetPositionAndRotation(spawnPoint.transform.position, spawnPoint.transform.rotation);
     }
 
     // Moves this character to a random one of its own spawn spots:
